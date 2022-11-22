@@ -98,7 +98,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export default function Join() {
+export default function Register() {
   const actionData = useActionData<typeof action>();
 
   const [searchParams] = useSearchParams();

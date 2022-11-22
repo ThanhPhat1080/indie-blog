@@ -1,5 +1,8 @@
 export enum ROUTERS {
-    DASHBOARD = '/dashboard'
+    ROOT = '/',
+    DASHBOARD = '/dashboard',
+    REGISTER = '/register',
+    LOGIN = '/login'
 }
 
 export default ROUTERS;
