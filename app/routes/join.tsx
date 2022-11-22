@@ -2,13 +2,19 @@ import { useRef, useEffect } from "react";
 
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useSearchParams,
+  useTransition,
+} from "@remix-run/react";
 
 import { getUserId, createUserSession } from "~/session.server";
 import { createUser, getUserByEmail } from "~/models/user.server";
 
 import {
-  isEmpty,
+  isEmptyOrNotExist,
   safeRedirect,
   validateEmail,
   validateUserName,
@@ -16,7 +22,10 @@ import {
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  if (userId) {
+    return redirect("/");
+  }
+
   return json({});
 }
 
@@ -90,17 +99,21 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Join() {
+  const actionData = useActionData<typeof action>();
+
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const actionData = useActionData<typeof action>();
+
+  const transition = useTransition();
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const isNameError = !isEmpty(actionData?.errors.name);
-  const isEmailError = !isEmpty(actionData?.errors.email);
-  const isPasswordError = !isEmpty(actionData?.errors.password);
+  const isNameError = !isEmptyOrNotExist(actionData?.errors.name);
+  const isEmailError = !isEmptyOrNotExist(actionData?.errors.email);
+  const isPasswordError = !isEmptyOrNotExist(actionData?.errors.password);
+  const isFormSubmission = !isEmptyOrNotExist(transition.submission);
 
   useEffect(function focusFormFieldError() {
     if (isNameError) {
@@ -119,7 +132,13 @@ export default function Join() {
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6">
+        <h2 className="text-center text-2xl">Create new account!</h2>
+        <Form
+          method="post"
+          className="space-y-6"
+          aria-describedby="Create user form"
+          aria-details="Create user form"
+        >
           <div>
             <label
               htmlFor="name"
@@ -139,7 +158,9 @@ export default function Join() {
                 autoComplete="name"
                 aria-invalid={isNameError ? true : undefined}
                 aria-describedby="name-error"
-                className={`w-full rounded border ${isNameError ? 'border-red-500' :"border-gray-500"} px-2 py-1 text-lg`}
+                className={`w-full rounded border ${
+                  isNameError ? "border-red-500" : "border-gray-500"
+                } px-2 py-1 text-lg`}
               />
               {isNameError && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -160,13 +181,14 @@ export default function Join() {
                 ref={emailRef}
                 id="email"
                 required
-                autoFocus={true}
                 name="email"
                 type="email"
                 autoComplete="email"
                 aria-invalid={isEmailError ? true : undefined}
                 aria-describedby="email-error"
-                className={`w-full rounded border ${isEmailError ? 'border-red-500' :"border-gray-500"} px-2 py-1 text-lg`}
+                className={`w-full rounded border ${
+                  isEmailError ? "border-red-500" : "border-gray-500"
+                } px-2 py-1 text-lg`}
               />
               {isEmailError && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -192,7 +214,9 @@ export default function Join() {
                 autoComplete="new-password"
                 aria-invalid={isPasswordError ? true : undefined}
                 aria-describedby="password-error"
-                className={`w-full rounded border ${isPasswordError ? 'border-red-500' :"border-gray-500"} px-2 py-1 text-lg`}
+                className={`w-full rounded border ${
+                  isPasswordError ? "border-red-500" : "border-gray-500"
+                } px-2 py-1 text-lg`}
               />
               {isPasswordError && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -205,9 +229,11 @@ export default function Join() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            disabled={isFormSubmission}
+            aria-disabled={isFormSubmission}
+            className="w-full rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
-            Create Account
+            {isFormSubmission ? "Creating..." : "Create Account"}
           </button>
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-gray-500">
