@@ -75,7 +75,7 @@ export function validateUserName(name: unknown): name is string {
   return typeof name === "string" && name.length >= 8 && name.length <= 100;
 }
 
-export function isEmpty(param: any) : boolean {
+export function isEmptyOrNotExist(param: any) : boolean {
   if (param === null || param === undefined) {
     return true;
   }
