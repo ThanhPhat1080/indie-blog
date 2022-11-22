@@ -1,4 +1,5 @@
 import { useMatches } from "@remix-run/react";
+import { type } from "os";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
@@ -68,4 +69,28 @@ export function useUser(): User {
 
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
+}
+
+export function validateUserName(name: unknown): name is string {
+  return typeof name === "string" && name.length >= 8 && name.length <= 100;
+}
+
+export function isEmpty(param: any) : boolean {
+  if (param === null || param === undefined) {
+    return true;
+  }
+
+  if (typeof param === "number") {
+    return param === 0;
+  }
+
+  if (typeof param === "string") {
+    return param.length === 0;
+  }
+
+  if (typeof param === "boolean") {
+    return !param;
+  }
+
+  return param.length === 0 || Object.keys(param).length === 0;
 }
