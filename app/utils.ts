@@ -1,5 +1,4 @@
 import { useMatches } from "@remix-run/react";
-import { type } from "os";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
