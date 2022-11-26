@@ -1,6 +1,7 @@
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { isEmptyOrNotExist } from "~/utils";
 
 export type { Post } from "@prisma/client";
 
@@ -16,10 +17,18 @@ export function getNote({
   });
 }
 
-export function getNoteListItems({ userId }: { userId: User["id"] }) {
+export function getPostBySlug(slug: string, userId?: string) {
+  const query = isEmptyOrNotExist(userId) ? { slug } : { slug, userId };
+
+  return prisma.post.findFirst({
+    where: query,
+  });
+}
+
+export function getPostListItems({ userId }: { userId: User["id"] }) {
   return prisma.post.findMany({
     where: { userId },
-    select: { id: true, title: true },
+    select: { id: true, title: true, slug: true, preface: true },
     orderBy: { updatedAt: "desc" },
   });
 }
@@ -28,8 +37,10 @@ export function createNote({
   title,
   preface,
   body,
+  slug,
+  isPublish = false,
   userId,
-}: Pick<Post, "body" | "title" | "preface"> & {
+}: Pick<Post, "body" | "title" | "preface" | "isPublish" | "slug"> & {
   userId: User["id"];
 }) {
   return prisma.post.create({
@@ -37,6 +48,8 @@ export function createNote({
       title,
       preface,
       body,
+      isPublish,
+      slug,
       user: {
         connect: {
           id: userId,
