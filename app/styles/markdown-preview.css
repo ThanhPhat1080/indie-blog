@@ -13,7 +13,7 @@
 .text-with-markdown h4,
 .text-with-markdown h5,
 .text-with-markdown h6 {
-    margin-block: 2rem 0.8rem;
+    margin-block: 1.5rem 0.8rem;
     margin-inline: 0;
     display: block;
     font-weight: bold;
@@ -24,7 +24,7 @@
 }
 
 .text-with-markdown h2 {
-    font-size: 2em;
+    font-size: 2.2em;
 }
 
 .text-with-markdown h3 {
@@ -36,7 +36,7 @@
 }
 
 .text-with-markdown h5 {
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 .text-with-markdown h6 {
@@ -44,7 +44,7 @@
 }
 
 .text-with-markdown p {
-    margin-block: 2rem 0.8rem;
+    margin-block: 1rem 0.8rem;
     margin-inline: 0;
     display: block;
     font-size: 1em;

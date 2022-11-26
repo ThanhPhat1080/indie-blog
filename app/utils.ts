@@ -94,3 +94,9 @@ export function isEmptyOrNotExist(param: any) : boolean {
 
   return param.length === 0 || Object.keys(param).length === 0;
 }
+
+export function convertUrlSlugFormat(text: string) : string {
+  return text.toLowerCase()
+          .replace(/[^\w ]+/g, '')
+          .replace(/ +/g, '-');
+}

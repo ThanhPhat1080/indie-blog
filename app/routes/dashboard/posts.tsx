@@ -1,18 +1,23 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
-import { getNoteListItems } from "~/models/note.server";
+import { getPostListItems } from "~/models/note.server";
+import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const noteListItems = await getNoteListItems({ userId });
-  return json({ noteListItems });
+  const postListItems = await getPostListItems({ userId });
+  return json({ postListItems });
 }
 
-export default function NotesPage() {
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: stylesMarkdowPreview }];
+};
+
+export default function PostPage() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
 
@@ -33,27 +38,28 @@ export default function NotesPage() {
         </Form>
       </header>
 
-      <main className="flex h-full bg-white">
-        <div className="h-full w-80 border-r bg-gray-50">
+      <main className="flex h-full">
+        <div className="h-full w-80 border-r bg-gray-200">
           <Link to="new" className="block p-4 text-xl text-blue-500">
             + New Note
           </Link>
-
           <hr />
-
-          {data.noteListItems.length === 0 ? (
+          {data.postListItems.length === 0 ? (
             <p className="p-4">No notes yet</p>
           ) : (
             <ol>
-              {data.noteListItems.map((note) => (
-                <li key={note.id}>
+              {data.postListItems.map((post) => (
+                <li key={post.id}>
                   <NavLink
                     className={({ isActive }) =>
-                      `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
+                      `flex flex-col border-b p-4 text-xl ${
+                        isActive ? "bg-gray-500" : ""
+                      }`
                     }
-                    to={note.id}
+                    to={post.slug}
                   >
-                    📝 {note.title}
+                    <strong className="my-2 text-lg">📝 {post.title}</strong>
+                    <em className="text-sm">{post.preface}</em>
                   </NavLink>
                 </li>
               ))}
@@ -61,7 +67,7 @@ export default function NotesPage() {
           )}
         </div>
 
-        <div className="flex-1 p-6">
+        <div className="flex-1">
           <Outlet />
         </div>
       </main>
