@@ -2,6 +2,7 @@ import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
 import type { User } from "~/models/user.server";
+// import { v2 as cloudinary } from 'cloudinary';
 
 const DEFAULT_REDIRECT = "/";
 
@@ -74,7 +75,7 @@ export function validateUserName(name: unknown): name is string {
   return typeof name === "string" && name.length >= 8 && name.length <= 100;
 }
 
-export function isEmptyOrNotExist(param: any) : boolean {
+export function isEmptyOrNotExist(param: unknown) : param is (null | undefined | string | boolean | number | Object) {
   if (param === null || param === undefined) {
     return true;
   }
@@ -91,7 +92,7 @@ export function isEmptyOrNotExist(param: any) : boolean {
     return !param;
   }
 
-  return param.length === 0 || Object.keys(param).length === 0;
+  return Object.keys(param).length === 0;
 }
 
 export function convertUrlSlugFormat(text: string) : string {

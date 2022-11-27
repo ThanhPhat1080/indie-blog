@@ -33,6 +33,7 @@ model Post {
   body        String
   isPublish   Boolean
   slug        String @unique
+  coverImage  String
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
