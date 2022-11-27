@@ -6,17 +6,24 @@ import invariant from "tiny-invariant";
 import marked from "marked";
 import sanitizeHtml from "sanitize-html";
 
+import type { Post } from "~/models/note.server";
 import { deleteNote, getPostBySlug } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 import { TextWithMarkdown } from "~/components";
 import { isEmptyOrNotExist } from "~/utils";
 
+import remixImageStyles from "remix-image/remix-image.css";
+
+export const links = () => [
+  { rel: "stylesheet", href: remixImageStyles },
+];
+
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   invariant(params.slug, "noteId not found");
 
-  const post = await getPostBySlug(params.slug, userId);
-  if (!post || isEmptyOrNotExist(post)) {
+  const post: Post = await getPostBySlug(params.slug, userId);
+  if (isEmptyOrNotExist(post)) {
     throw new Response("Not Found", { status: 404 });
   }
 
@@ -33,14 +40,17 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function NoteDetailsPage() {
-  const data = useLoaderData<typeof loader>();
+  const { post } = useLoaderData<typeof loader>() as { post: Post };
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.post.title}</h3>
+      <h2>Cover image</h2>
+      <img alt={post.title} src={post.coverImage} />
+      <h3 className="text-2xl font-bold">{post.title}</h3>
+      <h3 className="text-xl font-bold">{post.preface}</h3>
       <div className="py-6">
       {/* @ts-ignore */}
-      <TextWithMarkdown text={sanitizeHtml(marked(data.post.body))}/>
+      <TextWithMarkdown text={sanitizeHtml(marked(post.body))}/>
       </div>
       <hr className="my-4" />
       <Form method="post">

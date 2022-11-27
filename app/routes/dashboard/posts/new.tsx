@@ -1,22 +1,36 @@
 import * as React from "react";
 
-import type { ActionArgs, LinksFunction, MetaFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+/// TODO: check slug before upload image
+
+import type {
+  ActionFunction,
+  UploadHandler,
+  ActionArgs,
+  LinksFunction,
+  MetaFunction,
+} from "@remix-run/node";
+import {
+  json,
+  redirect,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 
-import { createNote, getPostBySlug } from "~/models/note.server";
+import { createPost, getPostBySlug, cloudinaryUploadImage } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 
 import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 
-import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
+import { 
+   convertUrlSlugFormat,
+    isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 
 export const links: LinksFunction = () => {
-  return [
-    ...SwitchButtonLink(),
-  ];
+  return [...SwitchButtonLink()];
 };
 
 export const meta: MetaFunction = () => ({
@@ -25,62 +39,97 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+
+const uploadImageHandler: (fileInputName: string) => UploadHandler = (fileInputName) => composeUploadHandlers(
+  async ({ name, contentType, data, filename }) => {
+    if (name !== fileInputName) {
+      return undefined;
+    }
+    const uploadedImage = await cloudinaryUploadImage(data);
+
+    //@ts-ignore
+    return uploadedImage.secure_url;
+  },
+
+  createMemoryUploadHandler()
+);
+
 export async function action({ request }: ActionArgs) {
-  const defaultErrorObj = {
+  let defaultErrorObj = {
     title: null,
     preface: null,
     body: null,
-    slug: null
+    slug: null,
+    coverImage: null,
   };
 
   const userId = await requireUserId(request);
 
-  const formData = await request.formData();
+  // Collect form data
+  const formData = await parseMultipartFormData(request, uploadImageHandler("coverImage"));
   const slug = formData.get("slug");
   const title = formData.get("title");
   const preface = formData.get("preface");
   const body = formData.get("body");
+  const coverImage = formData.get("coverImage");
   const isPublish = isEmptyOrNotExist(formData.get("isPublish"));
   const post = await getPostBySlug(slug!.toString());
 
+  // Checking is post slug (generation form post title) already exists.
+  // If exist, throw error; user must find another name.
   if (!isEmptyOrNotExist(post)) {
     return json(
-      {errors: {...defaultErrorObj, slug: "This title or slug already taken"}},
+      {
+        errors: {
+          ...defaultErrorObj,
+          slug: "This title or slug already taken",
+        },
+      },
       { status: 400 }
-    )
+    );
   }
 
-  if (typeof title !== "string" || title.length === 0) {
+  if (isEmptyOrNotExist(title)) {
     return json(
       { errors: { ...defaultErrorObj, title: "Title is required" } },
       { status: 400 }
     );
   }
 
-  if (typeof preface !== "string" || preface.length === 0) {
+  if (isEmptyOrNotExist(preface)) {
     return json(
       { errors: { ...defaultErrorObj, preface: "Preface is required" } },
       { status: 400 }
     );
   }
 
-  if (typeof body !== "string" || body.length === 0) {
+  if (isEmptyOrNotExist(body)) {
     return json(
       { errors: { ...defaultErrorObj, body: "Body is required" } },
       { status: 400 }
     );
   }
 
-  const note = await createNote({
+  // Handle upload image
+  if (isEmptyOrNotExist(coverImage)) {
+    return json (
+      { errors: { ...defaultErrorObj, coverImage: "Fail to upload your cover image. It's require. Please try again!" } },
+      { status: 400 }
+    )
+  }
+
+  // Create new post
+  const newPost = await createPost({
     title,
     preface,
     body,
+    coverImage,
     isPublish,
     userId,
-    slug : convertUrlSlugFormat(title),
+    slug: convertUrlSlugFormat(title),
   });
 
-  return redirect(`/notes/${note.id}`);
+  return redirect(`/posts/${newPost.slug}`);
 }
 
 export default function NewNotePage() {
@@ -101,6 +150,9 @@ export default function NewNotePage() {
   const isPrefaceError = !isEmptyOrNotExist(actionData?.errors?.preface);
   const isBodyError = !isEmptyOrNotExist(actionData?.errors?.body);
   const isSlugError = !isEmptyOrNotExist(actionData?.errors?.slug);
+  const isUploadCoverImageError = !isEmptyOrNotExist(
+    actionData?.errors?.coverImage
+  );
 
   React.useEffect(() => {
     if (isTitleError) {
@@ -122,6 +174,7 @@ export default function NewNotePage() {
       <div className="flex h-full">
         <div className="h-full flex-1 border-r-2 border-gray-400">
           <Form
+            encType="multipart/form-data"
             method="post"
             style={{
               display: "flex",
@@ -144,6 +197,27 @@ export default function NewNotePage() {
               </div>
             </div>
             <div className="flex h-full flex-1 flex-col px-1">
+              {/* ---Cover image --- */}
+              <label
+                htmlFor="img-field"
+                className="text-stale flex w-full flex-col gap-1 text-sm"
+              >
+                Upload your post cover image here
+                <input
+                  id="img-field"
+                  type="file"
+                  name="coverImage"
+                  accept="image/*"
+                  readOnly
+                />
+                {isUploadCoverImageError && (
+                  <div className="pt-1 text-red-700" id="body-error">
+                    {actionData!.errors.coverImage}
+                  </div>
+                )}
+              </label>
+
+              {/* ---Title--- */}
               <label className="text-stale flex w-full flex-col gap-1 text-sm">
                 Title
                 <input
@@ -172,15 +246,16 @@ export default function NewNotePage() {
                   </div>
                 )}
               </label>
-              <label 
-                className=""
-              >
+
+              {/* ---Hidden slug--- */}
               <input
                 name="slug"
                 className="hidden"
+                readOnly
                 value={convertUrlSlugFormat(notePreview.title)}
               />
-              </label>
+
+              {/* ---Preface--- */}
               <label className="text-stale flex w-full flex-col gap-1 text-sm">
                 Preface
                 <input
@@ -205,6 +280,7 @@ export default function NewNotePage() {
                 )}
               </label>
 
+              {/* ---Body--- */}
               <label
                 className="text-stale flex w-full flex-1 flex-col gap-1 text-sm"
                 style={{}}
@@ -256,7 +332,7 @@ export default function NewNotePage() {
             <label className="text-stale my-3 flex w-full flex-col gap-1 text-sm">
               <em>Your preview post slug goes here</em>
               <input
-                name="slug"
+                readOnly
                 className="text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
                 aria-invalid={isSlugError ? true : undefined}
                 aria-errormessage={isSlugError ? "preface-error" : undefined}

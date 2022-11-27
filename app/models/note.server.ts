@@ -1,3 +1,6 @@
+import {v2 as cloudinary} from "cloudinary";
+import { writeAsyncIterableToWritable } from "@remix-run/node";
+
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
@@ -20,7 +23,7 @@ export function getNote({
 export function getPostBySlug(slug: string, userId?: string) {
   const query = isEmptyOrNotExist(userId) ? { slug } : { slug, userId };
 
-  return prisma.post.findFirst({
+  return prisma.post.findFirstOrThrow({
     where: query,
   });
 }
@@ -33,14 +36,15 @@ export function getPostListItems({ userId }: { userId: User["id"] }) {
   });
 }
 
-export function createNote({
+export function createPost({
   title,
   preface,
   body,
   slug,
   isPublish = false,
   userId,
-}: Pick<Post, "body" | "title" | "preface" | "isPublish" | "slug"> & {
+  coverImage
+}: Pick<Post, "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"> & {
   userId: User["id"];
 }) {
   return prisma.post.create({
@@ -50,6 +54,7 @@ export function createNote({
       body,
       isPublish,
       slug,
+      coverImage,
       user: {
         connect: {
           id: userId,
@@ -66,4 +71,30 @@ export function deleteNote({
   return prisma.post.deleteMany({
     where: { id, userId },
   });
+}
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export function cloudinaryUploadImage(data: AsyncIterable<Uint8Array>) {
+  const uploadPromise = new Promise(async (resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "remix",
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      }
+    );
+    await writeAsyncIterableToWritable(data, uploadStream);
+  });
+
+  return uploadPromise;
 }
