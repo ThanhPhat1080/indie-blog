@@ -4,19 +4,18 @@ import { writeAsyncIterableToWritable } from "@remix-run/node";
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-import { isEmptyOrNotExist } from "~/utils";
+import { isEmptyOrNotExist, removeEmptyObjectProperties } from "~/utils";
 
 export type { Post } from "@prisma/client";
 
-export function getNote({
+export function getPost({
   id,
   userId,
 }: Pick<Post, "id"> & {
   userId: User["id"];
 }) {
   return prisma.post.findFirst({
-    select: { id: true, body: true, title: true },
-    where: { id, userId },
+    where: { id, userId }
   });
 }
 
@@ -64,12 +63,36 @@ export function createPost({
   });
 }
 
-export function deleteNote({
+export function updatePost({
   id,
+  title,
+  preface,
+  body,
+  slug,
+  isPublish = false,
+  coverImage = null,
+}: Pick<Post, "id" | "title" | "preface" | "body" |  "slug" | "isPublish" | "coverImage">) {
+  return prisma.post.update({
+    where: {
+      id
+    },
+    data: removeEmptyObjectProperties({
+      title,
+      preface,
+      body,
+      isPublish,
+      slug,
+      coverImage
+    }),
+  });
+}
+
+export function deletePostBySlug({
+  slug,
   userId,
-}: Pick<Post, "id"> & { userId: User["id"] }) {
+}: Pick<Post, "slug"> & { userId: User["id"] }) {
   return prisma.post.deleteMany({
-    where: { id, userId },
+    where: { slug, userId },
   });
 }
 

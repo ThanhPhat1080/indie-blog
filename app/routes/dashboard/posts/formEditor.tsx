@@ -7,6 +7,7 @@ import type {
   ActionArgs,
   LinksFunction,
   MetaFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import {
   json,
@@ -15,16 +16,26 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 
-import { createPost, getPostBySlug, cloudinaryUploadImage } from "~/models/note.server";
+import type {
+  Post} from "~/models/note.server";
+import {
+  createPost,
+  getPostBySlug,
+  cloudinaryUploadImage,
+  getPost,
+  updatePost,
+} from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 
 import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 
-import { 
-   convertUrlSlugFormat,
-    isEmptyOrNotExist } from "~/utils";
+import {
+  convertUrlSlugFormat,
+  isEmptyOrNotExist,
+  getPathImgCloudinary,
+} from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 
@@ -38,20 +49,47 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+const uploadImageHandler: (fileInputName: string) => UploadHandler = (
+  fileInputName
+) =>
+  composeUploadHandlers(
+    async ({ name, contentType, data, filename }) => {
+      try {
+        if (name !== fileInputName) {
+          return;
+        }
+        const uploadedImage = await cloudinaryUploadImage(data);
 
-const uploadImageHandler: (fileInputName: string) => UploadHandler = (fileInputName) => composeUploadHandlers(
-  async ({ name, contentType, data, filename }) => {
-    if (name !== fileInputName) {
-      return undefined;
-    }
-    const uploadedImage = await cloudinaryUploadImage(data);
+        //@ts-ignore
+        return getPathImgCloudinary(uploadedImage);
+      } catch (e) {
+        return "";
+      }
+    },
 
-    //@ts-ignore
-    return uploadedImage.secure_url;
-  },
+    createMemoryUploadHandler()
+  );
 
-  createMemoryUploadHandler()
-);
+export async function loader({ request }: LoaderArgs) {
+  const userId = await requireUserId(request);
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+
+  if (isEmptyOrNotExist(id)) {
+    return json({ isEdit: false });
+  }
+
+  const post = await getPost({ id, userId });
+  if (isEmptyOrNotExist(post)) {
+    throw new Response(
+      "Can not found your post or you don't have permission to edit this one: ",
+      { status: 404 }
+    );
+  }
+
+  return json({ post, isEdit: true });
+}
 
 export async function action({ request }: ActionArgs) {
   let defaultErrorObj = {
@@ -60,33 +98,28 @@ export async function action({ request }: ActionArgs) {
     body: null,
     slug: null,
     coverImage: null,
+    serverError: null,
   };
 
   const userId = await requireUserId(request);
 
+  // const formDatad = await request.formData();
+  // const isPublishddd = !isEmptyOrNotExist(formDatad.get("isPublish"));
+  // console.log("isPublishddd", isPublishddd, formDatad.get("isPublish"))
+
+  // return json({});
   // Collect form data
-  const formData = await parseMultipartFormData(request, uploadImageHandler("coverImage"));
+  const formData = await parseMultipartFormData(
+    request,
+    uploadImageHandler("coverImage")
+  );
   const slug = formData.get("slug");
   const title = formData.get("title");
   const preface = formData.get("preface");
   const body = formData.get("body");
   const coverImage = formData.get("coverImage");
-  const isPublish = isEmptyOrNotExist(formData.get("isPublish"));
-  
-  // Checking is post slug (generation form post title) already exists.
-  // If exist, throw error; user must find another name.
-  const post = await getPostBySlug(slug!.toString());
-  if (post) {
-    return json(
-      {
-        errors: {
-          ...defaultErrorObj,
-          slug: "This title or slug already taken",
-        },
-      },
-      { status: 400 }
-    );
-  }
+  const isPublish = !isEmptyOrNotExist(formData.get("isPublish"));
+  const postId = formData.get("id") || null;
 
   if (isEmptyOrNotExist(title)) {
     return json(
@@ -109,35 +142,101 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  // Handle upload image
+  // Get the post by slug
+  const post = await getPostBySlug(slug!.toString());
+
+  // Create new post if method is 'POST'
+  if (request.method.toUpperCase() === "POST") {
+    // Checking is post slug (generation form post title) already exists.
+    // If exist, throw error; user must find another name.
+    if (post) {
+      return json(
+        {
+          errors: {
+            ...defaultErrorObj,
+            slug: "This title or slug already taken",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // Handle validate upload image
   if (isEmptyOrNotExist(coverImage)) {
-    return json (
-      { errors: { ...defaultErrorObj, coverImage: "Fail to upload your cover image. It's require. Please try again!" } },
+    return json(
+      {
+        errors: {
+          ...defaultErrorObj,
+          coverImage:
+            "Fail to upload your cover image. It's require. Please try again!",
+        },
+      },
       { status: 400 }
-    )
+    );
   }
 
-  // Create new post
-  const newPost = await createPost({
-    title,
-    preface,
-    body,
-    coverImage,
-    isPublish,
-    userId,
-    slug: convertUrlSlugFormat(title),
-  });
+    // Create new post
+    const newPost = await createPost({
+      title,
+      preface,
+      body,
+      coverImage,
+      isPublish,
+      userId,
+      slug: convertUrlSlugFormat(title),
+    });
 
-  return redirect(`/posts/${newPost.slug}`);
+    return redirect(`${ROUTERS.DASHBOARD}/posts/${newPost.slug}`);
+  }
+
+  // Update post if method is 'POST'
+  if (request.method.toUpperCase() === "PATCH" && !isEmptyOrNotExist(postId)) {
+
+    if (post === null || (post.id === postId)) {
+      const updatedPost = await updatePost({
+        id: postId,
+        title,
+        preface,
+        body,
+        coverImage,
+        isPublish,
+        slug: convertUrlSlugFormat(title),
+      });
+
+      return redirect(`${ROUTERS.DASHBOARD}/posts/${updatedPost.slug}`);
+    }
+  }
+
+  return json({
+    errors: {
+      ...defaultErrorObj,
+      serverError: "Can not execute this action. Please try again!",
+    },
+    status: 400,
+  });
 }
 
-export default function NewNotePage() {
-  const [notePreview, setNotePreview] = React.useState({
-    title: "",
-    preface: "",
-    body: "",
-    slug: "",
+export default function PostEditorForm() {
+  const { post, isEdit } = useLoaderData<typeof loader>() as {
+    post: Post;
+    isEdit: boolean;
+  };
+
+  const postTitle = isEdit ? post.title : "";
+  const postPreface = isEdit ? post.preface : "";
+  const postBody = isEdit ? post.body : "";
+  const postSlug = isEdit ? post.slug : "";
+  const postCoverImage = isEdit ? ROUTERS.LOADER_IMAGE + post.coverImage : "";
+  const postIsPublish = isEdit ? post.isPublish : false;
+
+  const [postPreview, setNotePreview] = React.useState({
+    title: postTitle,
+    preface: postPreface,
+    body: postBody,
+    slug: postSlug,
   });
+  const [postCoverImagePreview, setPostCoverImage] =
+    React.useState<string>(postCoverImage);
 
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
@@ -168,13 +267,23 @@ export default function NewNotePage() {
     }
   });
 
+  const onUploadCoverImage = (e: any) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      setPostCoverImage("");
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(e.target.files[0]);
+    setPostCoverImage(objectUrl);
+  };
+
   return (
     <>
       <div className="flex h-full">
         <div className="h-full flex-1 border-r-2 border-gray-400">
           <Form
             encType="multipart/form-data"
-            method="post"
+            method={isEdit ? "patch" : "post"}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -189,7 +298,11 @@ export default function NewNotePage() {
             <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
               <a href={ROUTERS.DASHBOARD}>Return</a>
               <div className="flex items-center gap-4">
-                <SwitchButton label="Publish" name="isPublish" />
+                <SwitchButton
+                  label="Publish"
+                  name="isPublish"
+                  isChecked={postIsPublish}
+                />
                 <button type="submit" className="p-2 text-sm text-white">
                   <strong>Save</strong>
                 </button>
@@ -208,6 +321,7 @@ export default function NewNotePage() {
                   name="coverImage"
                   accept="image/*"
                   readOnly
+                  onChange={onUploadCoverImage}
                 />
                 {isUploadCoverImageError && (
                   <div className="pt-1 text-red-700" id="body-error">
@@ -233,6 +347,7 @@ export default function NewNotePage() {
                     }))
                   }
                   required
+                  defaultValue={postTitle}
                 />
                 {isTitleError && (
                   <div className="pt-1 text-red-700" id="title-error">
@@ -246,12 +361,18 @@ export default function NewNotePage() {
                 )}
               </label>
 
-              {/* ---Hidden slug--- */}
+              {/* ---Hidden fields--- */}
               <input
                 name="slug"
                 className="hidden"
                 readOnly
-                value={convertUrlSlugFormat(notePreview.title)}
+                value={convertUrlSlugFormat(postPreview.title)}
+              />
+              <input
+                name="id"
+                className="hidden"
+                readOnly
+                value={post?.id ?? null}
               />
 
               {/* ---Preface--- */}
@@ -259,7 +380,7 @@ export default function NewNotePage() {
                 Preface
                 <input
                   name="preface"
-                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose  text-black"
+                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
                   aria-invalid={isPrefaceError ? true : undefined}
                   aria-errormessage={
                     isPrefaceError ? "preface-error" : undefined
@@ -271,6 +392,7 @@ export default function NewNotePage() {
                     }))
                   }
                   required
+                  defaultValue={postPreface}
                 />
                 {isPrefaceError && (
                   <div className="pt-1 text-red-700" id="title-error">
@@ -299,6 +421,7 @@ export default function NewNotePage() {
                     }))
                   }
                   required
+                  defaultValue={postBody}
                 />
                 {isBodyError && (
                   <div className="pt-1 text-red-700" id="body-error">
@@ -314,16 +437,24 @@ export default function NewNotePage() {
             <h2 className="">Post preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
+            <em className="text-stale text-sm">
+              Your preview post title goes here
+            </em>
+
             <h2 className="min-h-[3rem] text-center text-3xl font-bold">
-              {notePreview.title ? (
-                notePreview.title
+              {postPreview.title ? (
+                postPreview.title
               ) : (
                 <em className="text-slate-400">Your title goes here</em>
               )}
             </h2>
+            <em className="text-stale text-sm">
+              Your preview post preface goes here
+            </em>
+
             <h3 className="my-4 border-l-2 border-slate-200 pl-2 text-lg text-slate-500">
-              {notePreview.preface ? (
-                notePreview.preface
+              {postPreview.preface ? (
+                postPreview.preface
               ) : (
                 <em className="text-slate-400">Your preface goes here</em>
               )}
@@ -335,9 +466,24 @@ export default function NewNotePage() {
                 className="text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
                 aria-invalid={isSlugError ? true : undefined}
                 aria-errormessage={isSlugError ? "preface-error" : undefined}
-                value={convertUrlSlugFormat(notePreview.title)}
+                value={convertUrlSlugFormat(postPreview.title)}
                 disabled
               />
+            </label>
+            <label className="text-stale my-3 flex w-full flex-col gap-1 text-sm">
+              <em className="text-stale my-3 text-sm">
+                Your preview post cover image goes here
+              </em>
+              {isEmptyOrNotExist(postCoverImagePreview) ? (
+                <div className="b-col my-8 mx-auto inline-block h-10 w-10 rounded-md border-2 border-gray-200 shadow-lg"></div>
+              ) : (
+                <img
+                  alt="preview-cover"
+                  className="my-8 mx-auto rounded-md shadow-lg"
+                  width={300}
+                  src={postCoverImagePreview}
+                />
+              )}
             </label>
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
@@ -345,7 +491,7 @@ export default function NewNotePage() {
             <div className="relative h-full flex-1 overflow-scroll rounded border-2 border-gray-100">
               <TextWithMarkdown
                 customClasses="flex-1 text-xs absolute"
-                text={notePreview.body}
+                text={postPreview.body}
               />
             </div>
           </div>

@@ -30,7 +30,7 @@ export async function action({ request }: ActionArgs) {
   const password = formData.get("password");
   const remember = formData.get("remember");
 
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/posts");
 
   if (!validateEmail(email)) {
     return json(
@@ -80,7 +80,7 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams();
   const transition = useTransition();
 
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
+  const redirectTo = searchParams.get("redirectTo") || "/posts";
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
