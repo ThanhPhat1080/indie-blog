@@ -30,7 +30,7 @@ export async function action({ request }: ActionArgs) {
   const password = formData.get("password");
   const remember = formData.get("remember");
 
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/posts");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "dashboard/posts");
 
   if (!validateEmail(email)) {
     return json(

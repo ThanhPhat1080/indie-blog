@@ -20,7 +20,7 @@ const Dashboard = () => {
   return (
     <div>
       <h1>Hello, {data.user?.name}</h1>
-      <Link to={`${ROUTERS.DASHBOARD}/posts/formEditor`}>new </Link>
+      <Link to={`${ROUTERS.DASHBOARD}/formEditor`}>new </Link>
     </div>
   );
 };

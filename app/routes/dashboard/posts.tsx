@@ -5,7 +5,6 @@ import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 import { getPostListItems } from "~/models/note.server";
-import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -17,9 +16,6 @@ export async function loader({ request }: LoaderArgs) {
   return json({ postListItems, editingPostId: id });
 }
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesMarkdowPreview }];
-};
 
 export default function PostPage() {
   const data = useLoaderData<typeof loader>();
@@ -44,7 +40,7 @@ export default function PostPage() {
 
       <main className="flex flex-1 flex-row">
         <aside className="h-full w-80 border-r bg-gray-100">
-          <Link to="formEditor" className="block p-4 text-xl text-blue-500">
+          <Link to="./formEditor" className="block p-4 text-xl text-blue-500">
             + New Note
           </Link>
           <hr />

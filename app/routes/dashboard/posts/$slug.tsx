@@ -167,7 +167,7 @@ export default function NoteDetailsPage() {
     <div>
       <div className="w-100 flex h-8 items-center justify-end gap-4 bg-slate-600 p-2 text-sm text-white">
         <div className="flex items-center gap-4">
-          <Link to={`../formEditor?id=${post.id}`}>Edit</Link>
+          <Link to={`./formEditor?id=${post.id}`}>Edit</Link>
           <Form method="delete">
             <button type="submit" className="p-2 text-sm text-white">
               <strong>Delete</strong>

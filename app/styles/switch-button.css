@@ -10,5 +10,5 @@
     transform: translateX(100%);
 }
 .switch-btn .input-switch:checked ~ .toggle-path {
-    background-color:#81E6D9;
+    background-color: rgb(125 211 252);
 }

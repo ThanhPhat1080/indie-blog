@@ -17,6 +17,7 @@ import {
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
 import type {
   Post} from "~/models/note.server";
@@ -40,7 +41,7 @@ import {
 import ROUTERS from "~/constants/routers";
 
 export const links: LinksFunction = () => {
-  return [...SwitchButtonLink()];
+  return [...SwitchButtonLink(), { rel: "stylesheet", href: stylesMarkdowPreview }];
 };
 
 export const meta: MetaFunction = () => ({
@@ -53,7 +54,7 @@ const uploadImageHandler: (fileInputName: string) => UploadHandler = (
   fileInputName
 ) =>
   composeUploadHandlers(
-    async ({ name, contentType, data, filename }) => {
+    async ({ name, data }) => {
       try {
         if (name !== fileInputName) {
           return;
@@ -296,15 +297,18 @@ export default function PostEditorForm() {
             id="form-editor"
           >
             <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
-              <a href={ROUTERS.DASHBOARD}>Return</a>
+              <a href={ROUTERS.DASHBOARD} 
+              className='inline-flex items-center gap-1 px-1 hover:underline font-semibold text-sm text-white hover:scale-110 active:scale-110 focus:scale-110 ease-in-out duration-300'>
+                <img alt="return" src='/assets/icons/back.svg' />
+                Return</a>
               <div className="flex items-center gap-4">
                 <SwitchButton
                   label="Publish"
                   name="isPublish"
                   isChecked={postIsPublish}
                 />
-                <button type="submit" className="p-2 text-sm text-white">
-                  <strong>Save</strong>
+                <button type="submit" className="px-2 rounded-md text-sm text-white hover:scale-110 active:scale-110 focus:scale-110 ease-in-out duration-300 bg-sky-300 hover:bg-sky-400 active:bg-sky-500">
+                  Save
                 </button>
               </div>
             </div>
@@ -432,7 +436,7 @@ export default function PostEditorForm() {
             </div>
           </Form>
         </div>
-        <div className="flex h-full flex-1 flex-col border-l-2 border-gray-400">
+        <div className="flex h-full flex-1 flex-col border-l-2 border-gray-400 overflow-scroll">
           <div className="w-100 flex h-8 items-center justify-center bg-slate-600 p-2 text-sm text-white">
             <h2 className="">Post preview</h2>
           </div>
@@ -488,7 +492,7 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 overflow-scroll rounded border-2 border-gray-100">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100">
               <TextWithMarkdown
                 customClasses="flex-1 text-xs absolute"
                 text={postPreview.body}
