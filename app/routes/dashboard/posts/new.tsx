@@ -3,7 +3,6 @@ import * as React from "react";
 /// TODO: check slug before upload image
 
 import type {
-  ActionFunction,
   UploadHandler,
   ActionArgs,
   LinksFunction,
