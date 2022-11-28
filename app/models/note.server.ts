@@ -23,7 +23,7 @@ export function getNote({
 export function getPostBySlug(slug: string, userId?: string) {
   const query = isEmptyOrNotExist(userId) ? { slug } : { slug, userId };
 
-  return prisma.post.findFirstOrThrow({
+  return prisma.post.findFirst({
     where: query,
   });
 }
@@ -79,7 +79,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export function cloudinaryUploadImage(data: AsyncIterable<Uint8Array>) {
+export function cloudinaryUploadImage(data: AsyncIterable<Uint8Array>) : Promise<unknown> {
   const uploadPromise = new Promise(async (resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
