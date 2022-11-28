@@ -10,7 +10,11 @@ import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
   const postListItems = await getPostListItems({ userId });
-  return json({ postListItems });
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+
+  return json({ postListItems, editingPostId: id });
 }
 
 export const links: LinksFunction = () => {
@@ -38,9 +42,9 @@ export default function PostPage() {
         </Form>
       </header>
 
-      <main className="flex h-full">
-        <div className="h-full w-80 border-r bg-gray-200">
-          <Link to="new" className="block p-4 text-xl text-blue-500">
+      <main className="flex flex-1 flex-row">
+        <aside className="h-full w-80 border-r bg-gray-100">
+          <Link to="formEditor" className="block p-4 text-xl text-blue-500">
             + New Note
           </Link>
           <hr />
@@ -48,24 +52,37 @@ export default function PostPage() {
             <p className="p-4">No notes yet</p>
           ) : (
             <ol>
-              {data.postListItems.map((post) => (
-                <li key={post.id}>
-                  <NavLink
-                    className={({ isActive }) =>
-                      `flex flex-col border-b p-4 text-xl ${
-                        isActive ? "bg-gray-500" : ""
-                      }`
-                    }
-                    to={post.slug}
-                  >
-                    <strong className="my-2 text-lg">📝 {post.title}</strong>
-                    <em className="text-sm">{post.preface}</em>
-                  </NavLink>
-                </li>
-              ))}
+              {data.postListItems.map((post) => {
+                const isEditing = data.editingPostId === post.id;
+                return (
+                  <li key={post.id}>
+                    <NavLink
+                      className={({ isActive }) =>
+                        `flex flex-col relative border-b border-gray-200 p-4 text-xl ${
+                          isActive ? "bg-gray-200" : ""
+                        } ${isEditing ? 'bg-sky-100' : ''}`
+                      }
+                      to={post.slug}
+                    >
+                      {isEditing && (
+                        <div className="flex gap-3 items-center absolute top-0">
+                          <span className="flex h-3 w-3 relative">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                          
+                          </span>
+                          <em className="text-xs text-sky-400">Editing...</em>
+                        </div>
+                      )}
+                      <strong className="my-2 text-lg">📝 {post.title}</strong>
+                      <em className="text-sm">{post.preface}</em>
+                    </NavLink>
+                  </li>
+                );
+              })}
             </ol>
           )}
-        </div>
+        </aside>
 
         <div className="flex-1">
           <Outlet />

@@ -1,19 +1,23 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import marked from "marked";
 import sanitizeHtml from "sanitize-html";
 
 import type { Post } from "~/models/note.server";
-import { deleteNote, getPostBySlug } from "~/models/note.server";
+import { deletePostBySlug, getPostBySlug } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 import { TextWithMarkdown } from "~/components";
 import { isEmptyOrNotExist } from "~/utils";
 
 import remixImageStyles from "remix-image/remix-image.css";
-import Image, { ClientLoader,ImagePosition } from "remix-image";
+import type { ClientLoader, ImagePosition } from "remix-image";
+import Image from "remix-image";
+import type { User } from "~/models/user.server";
+import { getUserById } from "~/models/user.server";
+import ROUTERS from "~/constants/routers";
 
 const normalizeSrc = (src: string) => {
   return src.startsWith("/") ? src.slice(1) : src;
@@ -22,21 +26,21 @@ const normalizeSrc = (src: string) => {
 const numberToHex = (num: number): string =>
   ("0" + Number(num).toString(16)).slice(-2).toUpperCase();
 const positionMap: Record<ImagePosition, string> = {
-    "center bottom": "south",
-    "center center": "center",
-    "center top": "north",
-    "left bottom": "south_west",
-    "left center": "west",
-    "left top": "north_west",
-    "right bottom": "south_east",
-    "right center": "east",
-    "right top": "north_east",
-    bottom: "south",
-    center: "center",
-    left: "west",
-    right: "east",
-    top: "north",
-  };
+  "center bottom": "south",
+  "center center": "center",
+  "center top": "north",
+  "left bottom": "south_west",
+  "left center": "west",
+  "left top": "north_west",
+  "right bottom": "south_east",
+  "right center": "east",
+  "right top": "north_east",
+  bottom: "south",
+  center: "center",
+  left: "west",
+  right: "east",
+  top: "north",
+};
 export const cloudinaryLoader: ClientLoader = (
   src,
   loaderUrl,
@@ -130,92 +134,96 @@ export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   invariant(params.slug, "noteId not found");
 
+  const author = await getUserById(userId);
   const post = await getPostBySlug(params.slug, userId);
+
   if (isEmptyOrNotExist(post)) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ post });
+  if (isEmptyOrNotExist(author)) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  return json({ post, author });
 }
 
 export async function action({ request, params }: ActionArgs) {
   const userId = await requireUserId(request);
-  invariant(params.noteId, "noteId not found");
+  invariant(params.slug, `Not found this post with slug: ${params.slug}`);
 
-  await deleteNote({ userId, id: params.noteId });
+  await deletePostBySlug({ userId, slug: params.slug });
 
-  return redirect("/notes");
+  return redirect(`${ROUTERS.DASHBOARD}/posts`);
 }
 
-
-// {
-//   asset_id: 'dd4a07b4214ec9f520370036f4eab97a',
-//   public_id: 'remix/plierjx0uerkskisnyii',
-//   version: 1669565869,
-//   version_id: '6e81d92bea00f5e315b775ea35618cda',
-//   signature: 'a3d987a5a69ab9aff0ffabd2160eb15b312fa039',
-//   width: 1700,
-//   height: 1000,
-//   format: 'png',
-//   resource_type: 'image',
-//   created_at: '2022-11-27T16:17:49Z',
-//   tags: [],
-//   bytes: 350885,
-//   type: 'upload',
-//   etag: '0f6d54302c42c3ec3a5e4cb7ec1d877d',
-//   placeholder: false,
-//   url: 'http://res.cloudinary.com/diveoh2pp/image/upload/v1669565869/remix/plierjx0uerkskisnyii.png',
-//   secure_url: 'https://res.cloudinary.com/diveoh2pp/image/upload/v1669565869/remix/plierjx0uerkskisnyii.png',
-//   folder: 'remix',
-//   original_filename: 'file',
-//   api_key: '317651382317957'
-// }
 export default function NoteDetailsPage() {
-  const { post } = useLoaderData<typeof loader>() as { post: Post };
+  const { post, author } = useLoaderData<typeof loader>() as {
+    post: Post;
+    author: User;
+  };
 
   return (
     <div>
-      <h2>Cover image</h2>
-      {/* <img src={post.coverImage}></img> */}
-      <Image
-        alt={post.title}
-        loaderUrl="https://res.cloudinary.com/diveoh2pp/"
-        // src={post.coverImage}
-        src="v1669565068/remix/dcci8lkmhnc0oziqpptp.png"
-        loader={cloudinaryLoader}
-        options={{fit: 'fill'}}
-        responsive={[
-          {
-            size: {
-              width: 200,
-              height: 200
-            },
-            maxWidth: 1000
-          },{
-            size: {
-              width: 500,
-              height: 500
-            },
-            maxWidth: 800
-          },
-        ]}
-        dprVariants={[1]}
-      />
-      <h3 className="text-2xl font-bold">{post.title}</h3>
-      <h3 className="text-xl font-bold">{post.preface}</h3>
-      <div className="py-6">
-        {/* @ts-ignore */}
-        <TextWithMarkdown text={sanitizeHtml(marked(post.body))} />
+      <div className="w-100 flex h-8 items-center justify-end gap-4 bg-slate-600 p-2 text-sm text-white">
+        <div className="flex items-center gap-4">
+          <Link to={`../formEditor?id=${post.id}`}>Edit</Link>
+          <Form method="delete">
+            <button type="submit" className="p-2 text-sm text-white">
+              <strong>Delete</strong>
+            </button>
+          </Form>
+        </div>
       </div>
-      <hr className="my-4" />
-      <Form method="post">
-        <button
-          type="submit"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
-      </Form>
+      <div className="mx-auto my-12 flex min-h-screen max-w-3xl flex-col px-3 lg:px-0">
+        <article>
+          <section className="border-b pb-8">
+            <h1 className="text-4xl font-bold">{post.title}</h1>
+            <div className="my-8" />
+            <span className="flex items-center gap-x-4 font-semibold">
+              <span className="flex flex-col">
+                <span>{author.name}</span>
+                <span>
+                  {new Date(post.updatedAt)
+                    .toJSON()
+                    .slice(0, 10)
+                    .replace(/-/g, "/")}
+                </span>
+              </span>
+            </span>
+            <div className="my-4 border-l pl-2">
+              <p className="px-3 text-lg italic text-gray-600">
+                {post.preface}
+              </p>
+            </div>
+          </section>
+          <Image
+            alt={post.title}
+            loaderUrl={ROUTERS.LOADER_IMAGE}
+            src={post?.coverImage ?? ''}
+            loader={cloudinaryLoader}
+            options={{ fit: "contain" }}
+            responsive={[
+              {
+                size: {
+                  width: 500,
+                },
+                maxWidth: 1000,
+              },
+            ]}
+            width="1200"
+            height="675"
+            className="my-12 mx-auto rounded-md shadow-lg"
+          />
+          <hr className="my-4" />
+
+          <section className="py-6">
+            {/* @ts-ignore */}
+            <TextWithMarkdown text={sanitizeHtml(marked(post.body))} />
+          </section>
+          <hr className="my-4" />
+        </article>
+      </div>
     </div>
   );
 }

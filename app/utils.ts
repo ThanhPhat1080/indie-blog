@@ -100,3 +100,25 @@ export function convertUrlSlugFormat(text: string) : string {
           .replace(/[^\w ]+/g, '')
           .replace(/ +/g, '-');
 }
+
+export function getPathImgCloudinary(uploadResolved: any) : string {
+  if (isEmptyOrNotExist(uploadResolved)) {
+    return '';
+  }
+
+  return `v${uploadResolved.version.toString()}/${uploadResolved.public_id.toString()}.${uploadResolved.format.toString()}`;
+}
+
+export function removeEmptyObjectProperties (object: Object) : Object {
+  const returnObj: Object = Object.assign({}, object);
+
+  Object.keys(returnObj).forEach((key) => {
+    const value = returnObj[key as keyof object];
+
+    if (typeof value !== 'boolean' && isEmptyOrNotExist(value)) {
+      delete returnObj[key as keyof object];
+    } 
+  });
+
+  return returnObj;
+}
