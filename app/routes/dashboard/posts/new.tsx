@@ -3,7 +3,6 @@ import * as React from "react";
 /// TODO: check slug before upload image
 
 import type {
-  ActionFunction,
   UploadHandler,
   ActionArgs,
   LinksFunction,
@@ -73,11 +72,11 @@ export async function action({ request }: ActionArgs) {
   const body = formData.get("body");
   const coverImage = formData.get("coverImage");
   const isPublish = isEmptyOrNotExist(formData.get("isPublish"));
-  const post = await getPostBySlug(slug!.toString());
-
+  
   // Checking is post slug (generation form post title) already exists.
   // If exist, throw error; user must find another name.
-  if (!isEmptyOrNotExist(post)) {
+  const post = await getPostBySlug(slug!.toString());
+  if (post) {
     return json(
       {
         errors: {
