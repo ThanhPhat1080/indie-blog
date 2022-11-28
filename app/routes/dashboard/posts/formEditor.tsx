@@ -117,7 +117,7 @@ export async function action({ request }: ActionArgs) {
   const title = formData.get("title");
   const preface = formData.get("preface");
   const body = formData.get("body");
-  const coverImage = formData.get("coverImage");
+  const coverImage = formData.get("coverImage") as string;
   const isPublish = !isEmptyOrNotExist(formData.get("isPublish"));
   const postId = formData.get("id") || null;
 
