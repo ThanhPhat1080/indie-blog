@@ -1,12 +1,17 @@
 import { Link } from "@remix-run/react";
+import ROUTERS from "~/constants/routers";
 
-export default function NoteIndexPage() {
+export default function PostPagePreview() {
   return (
-    <p>
-      No note selected. Select a note on the left, or{" "}
-      <Link to="new" className="text-blue-500 underline">
-        create a new note.
+    <h2 className="m-10 text-2xl text-white">
+      Select post to preview. Or{" "}
+      <Link
+        className="text-sky-500 hover:underline"
+        to={`${ROUTERS.DASHBOARD}/formEditor-test`}
+      >
+        Create new one here
       </Link>
-    </p>
+      .
+    </h2>
   );
 }

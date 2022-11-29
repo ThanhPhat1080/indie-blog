@@ -30,7 +30,10 @@ export async function action({ request }: ActionArgs) {
   const password = formData.get("password");
   const remember = formData.get("remember");
 
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "dashboard/posts");
+  const redirectTo = safeRedirect(
+    formData.get("redirectTo"),
+    `${ROUTERS.DASHBOARD}/posts`
+  );
 
   if (!validateEmail(email)) {
     return json(
@@ -80,7 +83,8 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams();
   const transition = useTransition();
 
-  const redirectTo = searchParams.get("redirectTo") || "/posts";
+  const redirectTo =
+    searchParams.get("redirectTo") || `${ROUTERS.DASHBOARD}/posts`;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -171,19 +175,19 @@ export default function LoginPage() {
             {isFormSubmission ? "Logging in" : "Log in"}
           </button>
           <div className="flex items-center justify-between">
-              <label
-                htmlFor="remember"
-                className="ml-2 text-sm text-gray-900 flex items-center"
-              >
-                <input
-                  id="remember"
-                  name="remember"
-                  type="checkbox"
-                  disabled={isFormSubmission}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                {" "}Remember me
-              </label>
+            <label
+              htmlFor="remember"
+              className="ml-2 flex items-center text-sm text-gray-900"
+            >
+              <input
+                id="remember"
+                name="remember"
+                type="checkbox"
+                disabled={isFormSubmission}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />{" "}
+              Remember me
+            </label>
             <div className="text-center text-sm text-gray-500">
               Don't have an account?{" "}
               <Link

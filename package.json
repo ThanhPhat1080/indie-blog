@@ -22,7 +22,8 @@
     "typecheck": "tsc -b && tsc -b cypress",
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "prisma-migrate:dev": "prisma migrate dev",
-    "prisma:reset": "rm ./prisma/data.db && prisma migrate dev && prisma migrate reset"
+    "prisma:reset": "rm ./prisma/data.db && prisma migrate dev && prisma migrate reset",
+    "prisma:preview": "prisma introspect && prisma studio"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -52,6 +53,7 @@
     "@faker-js/faker": "^7.6.0",
     "@remix-run/dev": "*",
     "@remix-run/eslint-config": "*",
+    "@tailwindcss/line-clamp": "^0.4.2",
     "@testing-library/cypress": "^8.0.3",
     "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",

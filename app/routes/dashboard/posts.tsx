@@ -1,89 +1,57 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
-import { useUser } from "~/utils";
 import { getPostListItems } from "~/models/note.server";
+import { PostCard } from "~/components";
+import type { Post } from "@prisma/client";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const postListItems = await getPostListItems({ userId });
+  const postListItems: Post[] = await getPostListItems({ userId });
 
-  const url = new URL(request.url);
-  const id = url.searchParams.get("id");
-
-  return json({ postListItems, editingPostId: id });
+  return json({ postListItems });
 }
 
-
 export default function PostPage() {
-  const data = useLoaderData<typeof loader>();
-  const user = useUser();
+  const { postListItems } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex h-full min-h-screen flex-col">
-      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
-        <h1 className="text-3xl font-bold">
-          <Link to=".">Notes</Link>
-        </h1>
-        <p>{user.email}</p>
-        <Form action="/logout" method="post">
-          <button
-            type="submit"
-            className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
-          >
-            Logout
-          </button>
-        </Form>
-      </header>
-
-      <main className="flex flex-1 flex-row">
-        <aside className="h-full w-80 border-r bg-gray-100">
-          <Link to="./formEditor" className="block p-4 text-xl text-blue-500">
-            + New Note
+    <div className="flex">
+      <div className="sticky top-0 h-[calc(_100vh_-_50px_)] max-h-screen w-96 border-spacing-2 overflow-y-auto overflow-x-hidden border-r-2 border-gray-300 px-2 py-5 pl-6 pr-3 xl:w-96 xl:pr-5 2xl:w-96 2xl:pr-6">
+        <nav className="flex flex-col">
+          {postListItems.map((post) => (
+            <div key={post.id} className="relative my-2">
+              <NavLink to={post.slug}>
+                {({ isActive }) =>
+                  isActive ? (
+                    <span className="absolute left-[-6px] top-[-8px] z-20 flex h-5 w-5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+                      <span className="relative inline-flex h-5 w-5 rounded-full bg-orange-500"></span>
+                    </span>
+                  ) : null
+                }
+              </NavLink>
+              <PostCard
+                {...post}
+                createdAt={new Date(post.createdAt)}
+                updatedAt={new Date(post.updatedAt)}
+              />
+            </div>
+          ))}
+        </nav>
+        <div className="absolute bottom-0 left-0 w-full border-t-2 border-gray-400 p-4">
+          <Link to={"./../formEditor-test"}>
+            <button className="m-auto inline-flex w-full items-center justify-center rounded-md bg-green-500 p-2 text-center text-xl text-white hover:bg-green-600 active:bg-green-800">
+              Create new post
+            </button>
           </Link>
-          <hr />
-          {data.postListItems.length === 0 ? (
-            <p className="p-4">No notes yet</p>
-          ) : (
-            <ol>
-              {data.postListItems.map((post) => {
-                const isEditing = data.editingPostId === post.id;
-                return (
-                  <li key={post.id}>
-                    <NavLink
-                      className={({ isActive }) =>
-                        `flex flex-col relative border-b border-gray-200 p-4 text-xl ${
-                          isActive ? "bg-gray-200" : ""
-                        } ${isEditing ? 'bg-sky-100' : ''}`
-                      }
-                      to={post.slug}
-                    >
-                      {isEditing && (
-                        <div className="flex gap-3 items-center absolute top-0">
-                          <span className="flex h-3 w-3 relative">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                            <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
-                          
-                          </span>
-                          <em className="text-xs text-sky-400">Editing...</em>
-                        </div>
-                      )}
-                      <strong className="my-2 text-lg">📝 {post.title}</strong>
-                      <em className="text-sm">{post.preface}</em>
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </aside>
-
-        <div className="flex-1">
-          <Outlet />
         </div>
-      </main>
+      </div>
+      <div className="h-[calc(_100vh_-_50px_)] max-h-screen flex-1 overflow-y-auto overflow-x-hidden">
+        <Outlet />
+      </div>
     </div>
   );
 }

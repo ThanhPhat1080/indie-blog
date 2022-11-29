@@ -16,11 +16,15 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
 import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
-import type {
-  Post} from "~/models/note.server";
+import type { Post } from "~/models/note.server";
 import {
   createPost,
   getPostBySlug,
@@ -41,7 +45,10 @@ import {
 import ROUTERS from "~/constants/routers";
 
 export const links: LinksFunction = () => {
-  return [...SwitchButtonLink(), { rel: "stylesheet", href: stylesMarkdowPreview }];
+  return [
+    ...SwitchButtonLink(),
+    { rel: "stylesheet", href: stylesMarkdowPreview },
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -104,11 +111,6 @@ export async function action({ request }: ActionArgs) {
 
   const userId = await requireUserId(request);
 
-  // const formDatad = await request.formData();
-  // const isPublishddd = !isEmptyOrNotExist(formDatad.get("isPublish"));
-  // console.log("isPublishddd", isPublishddd, formDatad.get("isPublish"))
-
-  // return json({});
   // Collect form data
   const formData = await parseMultipartFormData(
     request,
@@ -163,18 +165,18 @@ export async function action({ request }: ActionArgs) {
     }
 
     // Handle validate upload image
-  if (isEmptyOrNotExist(coverImage)) {
-    return json(
-      {
-        errors: {
-          ...defaultErrorObj,
-          coverImage:
-            "Fail to upload your cover image. It's require. Please try again!",
+    if (isEmptyOrNotExist(coverImage)) {
+      return json(
+        {
+          errors: {
+            ...defaultErrorObj,
+            coverImage:
+              "Fail to upload your cover image. It's require. Please try again!",
+          },
         },
-      },
-      { status: 400 }
-    );
-  }
+        { status: 400 }
+      );
+    }
 
     // Create new post
     const newPost = await createPost({
@@ -192,8 +194,7 @@ export async function action({ request }: ActionArgs) {
 
   // Update post if method is 'POST'
   if (request.method.toUpperCase() === "PATCH" && !isEmptyOrNotExist(postId)) {
-
-    if (post === null || (post.id === postId)) {
+    if (post === null || post.id === postId) {
       const updatedPost = await updatePost({
         id: postId,
         title,
@@ -222,12 +223,16 @@ export default function PostEditorForm() {
     post: Post;
     isEdit: boolean;
   };
+  const { state: transitionState } = useTransition();
+  const isSumitting = transitionState === "submitting";
 
   const postTitle = isEdit ? post.title : "";
   const postPreface = isEdit ? post.preface : "";
   const postBody = isEdit ? post.body : "";
   const postSlug = isEdit ? post.slug : "";
-  const postCoverImage = isEdit ? ROUTERS.LOADER_IMAGE + post.coverImage : "";
+  const postCoverImage = isEdit
+    ? ROUTERS.LOADER_CLOUDINARY_IMAGE + post.coverImage
+    : "";
   const postIsPublish = isEdit ? post.isPublish : false;
 
   const [postPreview, setNotePreview] = React.useState({
@@ -297,17 +302,46 @@ export default function PostEditorForm() {
             id="form-editor"
           >
             <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
-              <a href={ROUTERS.DASHBOARD} 
-              className='inline-flex items-center gap-1 px-1 hover:underline font-semibold text-sm text-white hover:scale-110 active:scale-110 focus:scale-110 ease-in-out duration-300'>
-                <img alt="return" src='/assets/icons/back.svg' />
-                Return</a>
+              <a
+                href={ROUTERS.DASHBOARD}
+                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-110"
+              >
+                <img alt="return" src="/assets/icons/back.svg" />
+                Return
+              </a>
               <div className="flex items-center gap-4">
                 <SwitchButton
                   label="Publish"
                   name="isPublish"
                   isChecked={postIsPublish}
                 />
-                <button type="submit" className="px-2 rounded-md text-sm text-white hover:scale-110 active:scale-110 focus:scale-110 ease-in-out duration-300 bg-sky-300 hover:bg-sky-400 active:bg-sky-500">
+                <button
+                  type="submit"
+                  disabled={isSumitting}
+                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 active:scale-110 active:bg-sky-700"
+                >
+                  {transitionState === "submitting" && (
+                    <svg
+                      className="-ml-1 mr-3 h-3 w-3 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  )}
                   Save
                 </button>
               </div>
@@ -436,7 +470,7 @@ export default function PostEditorForm() {
             </div>
           </Form>
         </div>
-        <div className="flex h-full flex-1 flex-col border-l-2 border-gray-400 overflow-scroll">
+        <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
           <div className="w-100 flex h-8 items-center justify-center bg-slate-600 p-2 text-sm text-white">
             <h2 className="">Post preview</h2>
           </div>
@@ -479,7 +513,7 @@ export default function PostEditorForm() {
                 Your preview post cover image goes here
               </em>
               {isEmptyOrNotExist(postCoverImagePreview) ? (
-                <div className="b-col my-8 mx-auto inline-block h-10 w-10 rounded-md border-2 border-gray-200 shadow-lg"></div>
+                <div className="b-col my-2 mx-auto inline-block h-10 w-10 rounded-md border-2 border-gray-200 shadow-lg"></div>
               ) : (
                 <img
                   alt="preview-cover"

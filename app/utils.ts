@@ -75,7 +75,9 @@ export function validateUserName(name: unknown): name is string {
   return typeof name === "string" && name.length >= 8 && name.length <= 100;
 }
 
-export function isEmptyOrNotExist(param: unknown) : param is (null | undefined | string | boolean | number | Object) {
+export function isEmptyOrNotExist(
+  param: unknown
+): param is null | undefined | string | boolean | number | Object {
   if (param === null || param === undefined) {
     return true;
   }
@@ -95,29 +97,30 @@ export function isEmptyOrNotExist(param: unknown) : param is (null | undefined |
   return Object.keys(param).length === 0;
 }
 
-export function convertUrlSlugFormat(text: string) : string {
-  return text.toLowerCase()
-          .replace(/[^\w ]+/g, '')
-          .replace(/ +/g, '-');
+export function convertUrlSlugFormat(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
 }
 
-export function getPathImgCloudinary(uploadResolved: any) : string {
+export function getPathImgCloudinary(uploadResolved: any): string {
   if (isEmptyOrNotExist(uploadResolved)) {
-    return '';
+    return "";
   }
 
   return `v${uploadResolved.version.toString()}/${uploadResolved.public_id.toString()}.${uploadResolved.format.toString()}`;
 }
 
-export function removeEmptyObjectProperties (object: Object) : Object {
+export function removeEmptyObjectProperties(object: Object): Object {
   const returnObj: Object = Object.assign({}, object);
 
   Object.keys(returnObj).forEach((key) => {
     const value = returnObj[key as keyof object];
 
-    if (typeof value !== 'boolean' && isEmptyOrNotExist(value)) {
+    if (typeof value !== "boolean" && isEmptyOrNotExist(value)) {
       delete returnObj[key as keyof object];
-    } 
+    }
   });
 
   return returnObj;

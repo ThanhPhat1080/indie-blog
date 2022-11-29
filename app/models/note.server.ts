@@ -1,4 +1,4 @@
-import {v2 as cloudinary} from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { writeAsyncIterableToWritable } from "@remix-run/node";
 
 import type { User, Post } from "@prisma/client";
@@ -15,7 +15,7 @@ export function getPost({
   userId: User["id"];
 }) {
   return prisma.post.findFirst({
-    where: { id, userId }
+    where: { id, userId },
   });
 }
 
@@ -30,7 +30,6 @@ export function getPostBySlug(slug: string, userId?: string) {
 export function getPostListItems({ userId }: { userId: User["id"] }) {
   return prisma.post.findMany({
     where: { userId },
-    select: { id: true, title: true, slug: true, preface: true },
     orderBy: { updatedAt: "desc" },
   });
 }
@@ -42,8 +41,11 @@ export function createPost({
   slug,
   isPublish = false,
   userId,
-  coverImage
-}: Pick<Post, "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"> & {
+  coverImage,
+}: Pick<
+  Post,
+  "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"
+> & {
   userId: User["id"];
 }) {
   return prisma.post.create({
@@ -71,10 +73,13 @@ export function updatePost({
   slug,
   isPublish = false,
   coverImage = null,
-}: Pick<Post, "id" | "title" | "preface" | "body" |  "slug" | "isPublish" | "coverImage">) {
+}: Pick<
+  Post,
+  "id" | "title" | "preface" | "body" | "slug" | "isPublish" | "coverImage"
+>) {
   return prisma.post.update({
     where: {
-      id
+      id,
     },
     data: removeEmptyObjectProperties({
       title,
@@ -82,7 +87,7 @@ export function updatePost({
       body,
       isPublish,
       slug,
-      coverImage
+      coverImage,
     }),
   });
 }
@@ -102,7 +107,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export function cloudinaryUploadImage(data: AsyncIterable<Uint8Array>) : Promise<unknown> {
+export function cloudinaryUploadImage(
+  data: AsyncIterable<Uint8Array>
+): Promise<unknown> {
   const uploadPromise = new Promise(async (resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
