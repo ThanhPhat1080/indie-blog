@@ -4,14 +4,7 @@ import { Link } from "react-router-dom";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
 
 export const PostCard = (props: Partial<Post>) => {
-  const {
-    title,
-    preface,
-    isPublish,
-    slug,
-    coverImage,
-    updatedAt
-  } = props;
+  const { title, preface, isPublish, slug, coverImage, updatedAt } = props;
   return (
     <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
       <Link to={`${slug}`}>
@@ -58,8 +51,8 @@ export const PostCard = (props: Partial<Post>) => {
           {preface}
         </p>
         <Link
-          to={`${slug}`}
-          className="inline-flex items-center rounded-lg bg-sky-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-sky-800 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+          to={slug}
+          className="inline-flex items-center rounded-lg bg-sky-700 px-3 py-2 text-center text-sm font-medium text-white duration-300 ease-in-out hover:scale-105 hover:bg-sky-800 focus:scale-110 focus:outline-none focus:ring-4 focus:ring-sky-300 active:scale-110 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
         >
           Preview
           <svg

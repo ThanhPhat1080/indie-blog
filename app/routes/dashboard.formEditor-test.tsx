@@ -298,7 +298,7 @@ export default function PostEditorForm() {
                 <button
                   type="submit"
                   disabled={isSumitting}
-                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 active:scale-110 active:bg-sky-700"
+                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 active:scale-110 focus:scale-110 hover:bg-sky-600 active:bg-sky-700"
                 >
                   {transitionState === "submitting" && (
                     <svg
