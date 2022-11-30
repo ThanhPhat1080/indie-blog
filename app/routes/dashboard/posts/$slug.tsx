@@ -58,7 +58,7 @@ export default function NoteDetailsPage() {
 
   return (
     <div className="relative">
-      <div className="w-100 sticky top-0 flex h-10 py-1 items-center justify-end gap-4 bg-slate-600 p-2 text-md text-white">
+      <div className="z-20 w-100 sticky top-0 flex h-10 py-1 items-center justify-end gap-4 bg-slate-600 p-2 text-md text-white">
         <div className="flex items-center gap-4">
           <Link to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}>
             Edit
