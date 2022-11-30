@@ -1,28 +1,61 @@
 import type { LoaderArgs } from "@remix-run/server-runtime";
 import { json } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Form, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { getUserById } from "~/models/user.server";
 
 import { requireUserId } from "~/session.server";
 
 import remixImageStyles from "remix-image/remix-image.css";
+import ROUTERS from "~/constants/routers";
 
 export const links = () => [{ rel: "stylesheet", href: remixImageStyles }];
 
-// TODO: required login user
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
   const user = await getUserById(userId);
 
-  return json({ user });
+  if (!user) {
+    return json({
+      error: "Can not found user. Please try to sign out and re-login!",
+      status: 400,
+      user: null,
+    });
+  }
+
+  return json({ user, error: null, status: 200 });
 };
 
 const Dashboard = () => {
+  const data = useLoaderData<typeof loader>();
+
+  if (!data.user) {
+    return (
+      <p className="text-lg text-red-400">{`Error code: ${data.status} - ${data.error}`}</p>
+    );
+  }
+
   return (
-    <div className="flex h-full bg-slate-800 text-white">
+    <div className="flex h-full flex-col bg-slate-800 text-white">
+      <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg text-gray-400">
+        <h2 className="flex-1 text-3xl">
+          Welcome back,{" "}
+          <em className="font-semibold text-white">{data.user.name}</em>! Have a
+          good day <span>&#128536;</span>
+        </h2>
+        <Form method="post" action={ROUTERS.LOG_OUT}>
+          <button
+            type="submit"
+            className="item-centers inline-flex w-40 justify-center rounded-lg border border-gray-300 px-4 py-2 text-lg text-white duration-300 hover:scale-105 hover:bg-gray-500 active:scale-90 active:bg-gray-600"
+          >
+            <strong>
+              Log out ! <span>&#128075;</span>
+            </strong>
+          </button>
+        </Form>
+      </div>
       <div className="flex-1 flex-col">
-        <nav className="relative flex w-full gap-3 border-b-4 border-gray-500 text-md">
+        <nav className="relative flex w-full gap-3 border-b-4 border-gray-500 text-lg font-bold">
           <NavLink
             to="profile"
             className="relative inline-flex cursor-pointer items-center gap-4 py-2 px-6 text-center"
@@ -88,7 +121,7 @@ const Dashboard = () => {
             )}
           </NavLink>
         </nav>
-        <Outlet />
+        <Outlet context={data.user}/>
       </div>
     </div>
   );

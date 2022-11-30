@@ -91,7 +91,7 @@ export async function createUserSession({
 
 export async function logout(request: Request) {
   const session = await getSession(request);
-  return redirect(ROUTERS.DASHBOARD, {
+  return redirect(ROUTERS.ROOT, {
     headers: {
       "Set-Cookie": await sessionStorage.destroySession(session),
     },

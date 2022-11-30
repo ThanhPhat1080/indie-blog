@@ -7,7 +7,7 @@ export const PostCard = (props: Partial<Post>) => {
   const { title, preface, isPublish, slug, coverImage, updatedAt } = props;
   return (
     <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-      <Link to={`${slug}`}>
+      <Link to={slug}>
         <div className="h-40 overflow-hidden rounded-t-lg shadow-lg">
           <CloudinaryImageLoader
             alt={"Post cover image:" + title}
@@ -42,7 +42,7 @@ export const PostCard = (props: Partial<Post>) => {
             </div>
           )}
         </div>
-        <Link to={`${slug}`}>
+        <Link to={slug}>
           <h5 className="mb-4 max-h-20 overflow-hidden text-lg font-bold tracking-tight text-gray-900 line-clamp-3 dark:text-white">
             {title}
           </h5>
@@ -52,7 +52,7 @@ export const PostCard = (props: Partial<Post>) => {
         </p>
         <Link
           to={slug}
-          className="inline-flex items-center rounded-lg bg-sky-700 px-3 py-2 text-center text-sm font-medium text-white duration-300 ease-in-out hover:scale-105 hover:bg-sky-800 focus:scale-110 focus:outline-none focus:ring-4 focus:ring-sky-300 active:scale-110 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+          className="inline-flex items-center rounded-lg bg-sky-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-sky-800 focus:outline-none focus:ring-4 focus:ring-sky-300 active:scale-95 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
         >
           Preview
           <svg

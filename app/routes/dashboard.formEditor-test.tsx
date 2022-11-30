@@ -284,7 +284,7 @@ export default function PostEditorForm() {
             <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
               <a
                 href={ROUTERS.DASHBOARD + "/posts/" + (post?.slug || "")}
-                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-110"
+                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
               >
                 <img alt="return" src="/assets/icons/back.svg" />
                 Return
@@ -298,7 +298,7 @@ export default function PostEditorForm() {
                 <button
                   type="submit"
                   disabled={isSumitting}
-                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 active:scale-110 focus:scale-110 hover:bg-sky-600 active:bg-sky-700"
+                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 focus:ring-sky-800 active:scale-90 active:bg-sky-700"
                 >
                   {transitionState === "submitting" && (
                     <svg
@@ -313,7 +313,7 @@ export default function PostEditorForm() {
                         cy="12"
                         r="10"
                         stroke="currentColor"
-                        stroke-width="4"
+                        strokeWidth="4"
                       />
                       <path
                         className="opacity-75"
@@ -403,7 +403,16 @@ export default function PostEditorForm() {
                 className="text-stale flex w-full flex-1 flex-col gap-1 text-sm"
                 style={{}}
               >
-                Body
+                <span>
+                  Body in {" "}
+                  <a
+                    className="text-sky-400 hover:underline"
+                    href="https://www.markdownguide.org/basic-syntax/"
+                    target="blank"
+                  >
+                    Markdown syntax
+                  </a>
+                </span>
                 <textarea
                   ref={bodyRef}
                   name="body"

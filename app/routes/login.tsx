@@ -32,7 +32,7 @@ export async function action({ request }: ActionArgs) {
 
   const redirectTo = safeRedirect(
     formData.get("redirectTo"),
-    `${ROUTERS.DASHBOARD}/posts`
+    `${ROUTERS.DASHBOARD}/profile`
   );
 
   if (!validateEmail(email)) {
@@ -84,7 +84,7 @@ export default function LoginPage() {
   const transition = useTransition();
 
   const redirectTo =
-    searchParams.get("redirectTo") || `${ROUTERS.DASHBOARD}/posts`;
+    searchParams.get("redirectTo") || `${ROUTERS.DASHBOARD}/profile`;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
@@ -130,6 +130,7 @@ export default function LoginPage() {
                 aria-invalid={isEmailError ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                defaultValue='admin@admin.com'
               />
               {isEmailError && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -156,6 +157,7 @@ export default function LoginPage() {
                 aria-invalid={isPasswordError ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                defaultValue='adminadmin'
               />
               {isPasswordError && (
                 <div className="pt-1 text-red-700" id="password-error">

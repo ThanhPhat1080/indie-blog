@@ -2,6 +2,7 @@ import type { Password, User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
+import { removeEmptyObjectProperties } from "~/utils";
 
 export type { User } from "@prisma/client";
 
@@ -24,12 +25,31 @@ export async function createUser(
     data: {
       email,
       name,
+      bio: "",
+      twitter: "",
+      avatar: "",
       password: {
         create: {
           hash: hashedPassword,
         },
       },
     },
+  });
+}
+
+export async function updateUserProfile({
+  name,
+  bio,
+  twitter,
+  id,
+}: Pick<User, "id" | "name" | "twitter" | "bio">) {
+  return prisma.user.update({
+    where: { id },
+    data: removeEmptyObjectProperties({
+      name,
+      bio,
+      twitter,
+    }),
   });
 }
 

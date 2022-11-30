@@ -16,6 +16,7 @@ import { createUser, getUserByEmail } from "~/models/user.server";
 import {
   isEmptyOrNotExist,
   safeRedirect,
+  toTitleCase,
   validateEmail,
   validateUserName,
 } from "~/utils";
@@ -82,7 +83,7 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await createUser(name, email, password);
+  const user = await createUser(toTitleCase(name), email, password);
 
   return createUserSession({
     request,
