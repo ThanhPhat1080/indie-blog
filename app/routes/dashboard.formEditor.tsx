@@ -28,7 +28,6 @@ import type { Post } from "~/models/note.server";
 import {
   createPost,
   getPostBySlug,
-  cloudinaryUploadImage,
   getPost,
   updatePost,
 } from "~/models/note.server";
@@ -39,10 +38,10 @@ import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 import {
   convertUrlSlugFormat,
   isEmptyOrNotExist,
-  getPathImgCloudinary,
 } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
+import { uploadImageHandler } from "~/cloudinaryUtils.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -56,27 +55,6 @@ export const meta: MetaFunction = () => ({
   title: "Remix-Editor Notes",
   viewport: "width=device-width,initial-scale=1",
 });
-
-const uploadImageHandler: (fileInputName: string) => UploadHandler = (
-  fileInputName
-) =>
-  composeUploadHandlers(
-    async ({ name, data }) => {
-      try {
-        if (name !== fileInputName) {
-          return;
-        }
-        const uploadedImage = await cloudinaryUploadImage(data);
-
-        //@ts-ignore
-        return getPathImgCloudinary(uploadedImage);
-      } catch (e) {
-        return "";
-      }
-    },
-
-    createMemoryUploadHandler()
-  );
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);

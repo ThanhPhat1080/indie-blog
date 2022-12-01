@@ -24,15 +24,7 @@ export default function Profile() {
 
   return (
     <div className="border-r-1 mx-auto my-10 flex md:w-1/2 lg:w-1/3 sm:w-full  flex-col border-gray-500 pr-3">
-      <div className="my-2 mx-auto">
-        <img
-          className="h-60 w-60 rounded-full"
-          src="https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg"
-          alt={user.name + '-avatar'}
-        />
-      </div>
       <Outlet context={user} />
-      
     </div>
   );
 }

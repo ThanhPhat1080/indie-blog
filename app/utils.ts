@@ -1,8 +1,6 @@
+import { User } from "@prisma/client";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
-import type { User } from "~/models/user.server";
-// import { v2 as cloudinary } from 'cloudinary';
 
 const DEFAULT_REDIRECT = "/";
 
@@ -27,7 +25,6 @@ export function safeRedirect(
 
   return to;
 }
-
 /**
  * This base hook is used in other hooks to quickly search for specific data
  * across all loader data using useMatches.
@@ -126,10 +123,10 @@ export function removeEmptyObjectProperties(object: Object): Object {
   return returnObj;
 }
 
-export const toTitleCase = (phrase :string) => {
+export const toTitleCase = (phrase: string) => {
   return phrase
     .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };

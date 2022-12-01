@@ -1,6 +1,3 @@
-import { v2 as cloudinary } from "cloudinary";
-import { writeAsyncIterableToWritable } from "@remix-run/node";
-
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
@@ -99,32 +96,4 @@ export function deletePostBySlug({
   return prisma.post.deleteMany({
     where: { slug, userId },
   });
-}
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-export function cloudinaryUploadImage(
-  data: AsyncIterable<Uint8Array>
-): Promise<unknown> {
-  const uploadPromise = new Promise(async (resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "remix",
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(result);
-      }
-    );
-    await writeAsyncIterableToWritable(data, uploadStream);
-  });
-
-  return uploadPromise;
 }

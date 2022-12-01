@@ -39,16 +39,18 @@ export async function createUser(
 
 export async function updateUserProfile({
   name,
-  bio,
-  twitter,
+  bio = '',
+  twitter = '',
+  avatar = '',
   id,
-}: Pick<User, "id" | "name" | "twitter" | "bio">) {
+}: Pick<User, "id" | "name" | "twitter" | "bio" | "avatar">) {
   return prisma.user.update({
     where: { id },
     data: removeEmptyObjectProperties({
       name,
       bio,
       twitter,
+      avatar
     }),
   });
 }

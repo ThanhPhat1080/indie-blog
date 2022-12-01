@@ -7,6 +7,15 @@ export default function Profile() {
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
+      <div className="my-2 mx-auto">
+        <img
+          className="h-60 w-60 rounded-full"
+          src={user.avatar || ''}
+          height="240"
+          width="240"
+          alt={user.name + '-avatar'}
+        />
+      </div>
       <p className="my-2 text-center text-2xl">{user.name}</p>
       <hr />
       <div className="flex flex-col gap-3 text-lg">
