@@ -18,9 +18,7 @@ import ROUTERS from "~/constants/routers";
 import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: stylesMarkdowPreview },
-  ];
+  return [{ rel: "stylesheet", href: stylesMarkdowPreview }];
 };
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -58,13 +56,16 @@ export default function NoteDetailsPage() {
 
   return (
     <div className="relative">
-      <div className="z-20 w-100 sticky top-0 flex h-10 py-1 items-center justify-end gap-4 bg-slate-600 p-2 text-md text-white">
+      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 bg-slate-600 p-2 py-1 text-white">
         <div className="flex items-center gap-4">
           <Link to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}>
             Edit
           </Link>
           <Form method="delete">
-            <button type="submit" className="px-2 py-1 rounded-lg text-md text-white bg-red-500">
+            <button
+              type="submit"
+              className="text-md rounded-lg bg-red-500 px-2 py-1 text-white"
+            >
               <strong>Delete</strong>
             </button>
           </Form>

@@ -35,10 +35,7 @@ import { requireUserId } from "~/session.server";
 
 import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 
-import {
-  convertUrlSlugFormat,
-  isEmptyOrNotExist,
-} from "~/utils";
+import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 
@@ -381,7 +378,7 @@ export default function PostEditorForm() {
                 style={{}}
               >
                 <span>
-                  Body in {" "}
+                  Body in{" "}
                   <a
                     className="text-sky-400 hover:underline"
                     href="https://www.markdownguide.org/basic-syntax/"

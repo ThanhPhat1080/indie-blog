@@ -121,7 +121,7 @@ const Dashboard = () => {
             )}
           </NavLink>
         </nav>
-        <Outlet context={data.user}/>
+        <Outlet context={data.user} />
       </div>
     </div>
   );

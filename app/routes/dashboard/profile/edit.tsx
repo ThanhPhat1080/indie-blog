@@ -1,10 +1,5 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useActionData,
-  useOutletContext,
-} from "@remix-run/react";
+import { Form, Link, useActionData, useOutletContext } from "@remix-run/react";
 import ROUTERS from "~/constants/routers";
 import { updateUserProfile } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";

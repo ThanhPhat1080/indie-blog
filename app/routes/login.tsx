@@ -130,7 +130,7 @@ export default function LoginPage() {
                 aria-invalid={isEmailError ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-                defaultValue='admin@admin.com'
+                defaultValue="admin@admin.com"
               />
               {isEmailError && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 aria-invalid={isPasswordError ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-                defaultValue='adminadmin'
+                defaultValue="adminadmin"
               />
               {isPasswordError && (
                 <div className="pt-1 text-red-700" id="password-error">

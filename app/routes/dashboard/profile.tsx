@@ -23,7 +23,7 @@ export default function Profile() {
   const user = useOutletContext<User>();
 
   return (
-    <div className="border-r-1 mx-auto my-10 flex md:w-1/2 lg:w-1/3 sm:w-full  flex-col border-gray-500 pr-3">
+    <div className="border-r-1 mx-auto my-10 flex flex-col border-gray-500 pr-3  sm:w-full md:w-1/2 lg:w-1/3">
       <Outlet context={user} />
     </div>
   );

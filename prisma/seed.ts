@@ -17,7 +17,8 @@ async function seed() {
     data: {
       email,
       name: "admin",
-      avatar: "v1669912525/d6405738890860b9844024299ee0c7a6--flat-icons-free-icon_scra31.jpg",
+      avatar:
+        "v1669912525/d6405738890860b9844024299ee0c7a6--flat-icons-free-icon_scra31.jpg",
       password: {
         create: {
           hash: hashedPassword,

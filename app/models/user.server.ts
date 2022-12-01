@@ -16,8 +16,8 @@ export async function getUserByEmail(email: User["email"]) {
 
 export async function createUser({
   name,
-  bio = '',
-  twitter = '',
+  bio = "",
+  twitter = "",
   email,
   password,
 }: Pick<User, "name" | "email" | "twitter" | "bio"> & { password: string }) {

@@ -24,7 +24,7 @@ export default function Index() {
                   REMIX Indie Stack
                 </span>
               </h1>
-              
+
               <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
                 {user ? (
                   <Link
