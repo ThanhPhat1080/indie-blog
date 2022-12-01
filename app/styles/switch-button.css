@@ -1,14 +1,14 @@
 .switch-btn .toggle-path {
-    transition: background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
 }
 .switch-btn .toggle-circle {
-    top: 0.2rem;
-    left: 0.25rem;
-    transition: all 0.3s ease-in-out;
+  top: 0.2rem;
+  left: 0.25rem;
+  transition: all 0.3s ease-in-out;
 }
 .switch-btn .input-switch:checked ~ .toggle-circle {
-    transform: translateX(100%);
+  transform: translateX(100%);
 }
 .switch-btn .input-switch:checked ~ .toggle-path {
-    background-color:#81E6D9;
+  background-color: rgb(125 211 252);
 }

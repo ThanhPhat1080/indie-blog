@@ -1,6 +1,3 @@
-import {v2 as cloudinary} from "cloudinary";
-import { writeAsyncIterableToWritable } from "@remix-run/node";
-
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
@@ -15,7 +12,7 @@ export function getPost({
   userId: User["id"];
 }) {
   return prisma.post.findFirst({
-    where: { id, userId }
+    where: { id, userId },
   });
 }
 
@@ -30,7 +27,6 @@ export function getPostBySlug(slug: string, userId?: string) {
 export function getPostListItems({ userId }: { userId: User["id"] }) {
   return prisma.post.findMany({
     where: { userId },
-    select: { id: true, title: true, slug: true, preface: true },
     orderBy: { updatedAt: "desc" },
   });
 }
@@ -42,8 +38,11 @@ export function createPost({
   slug,
   isPublish = false,
   userId,
-  coverImage
-}: Pick<Post, "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"> & {
+  coverImage,
+}: Pick<
+  Post,
+  "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"
+> & {
   userId: User["id"];
 }) {
   return prisma.post.create({
@@ -71,10 +70,13 @@ export function updatePost({
   slug,
   isPublish = false,
   coverImage = null,
-}: Pick<Post, "id" | "title" | "preface" | "body" |  "slug" | "isPublish" | "coverImage">) {
+}: Pick<
+  Post,
+  "id" | "title" | "preface" | "body" | "slug" | "isPublish" | "coverImage"
+>) {
   return prisma.post.update({
     where: {
-      id
+      id,
     },
     data: removeEmptyObjectProperties({
       title,
@@ -82,7 +84,7 @@ export function updatePost({
       body,
       isPublish,
       slug,
-      coverImage
+      coverImage,
     }),
   });
 }
@@ -94,30 +96,4 @@ export function deletePostBySlug({
   return prisma.post.deleteMany({
     where: { slug, userId },
   });
-}
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-export function cloudinaryUploadImage(data: AsyncIterable<Uint8Array>) : Promise<unknown> {
-  const uploadPromise = new Promise(async (resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "remix",
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(result);
-      }
-    );
-    await writeAsyncIterableToWritable(data, uploadStream);
-  });
-
-  return uploadPromise;
 }

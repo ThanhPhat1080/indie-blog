@@ -16,14 +16,18 @@ import {
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
+import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
-import type {
-  Post} from "~/models/note.server";
+import type { Post } from "~/models/note.server";
 import {
   createPost,
   getPostBySlug,
-  cloudinaryUploadImage,
   getPost,
   updatePost,
 } from "~/models/note.server";
@@ -31,16 +35,15 @@ import { requireUserId } from "~/session.server";
 
 import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 
-import {
-  convertUrlSlugFormat,
-  isEmptyOrNotExist,
-  getPathImgCloudinary,
-} from "~/utils";
+import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 
 export const links: LinksFunction = () => {
-  return [...SwitchButtonLink()];
+  return [
+    ...SwitchButtonLink(),
+    { rel: "stylesheet", href: stylesMarkdowPreview },
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -48,27 +51,6 @@ export const meta: MetaFunction = () => ({
   title: "Remix-Editor Notes",
   viewport: "width=device-width,initial-scale=1",
 });
-
-const uploadImageHandler: (fileInputName: string) => UploadHandler = (
-  fileInputName
-) =>
-  composeUploadHandlers(
-    async ({ name, contentType, data, filename }) => {
-      try {
-        if (name !== fileInputName) {
-          return;
-        }
-        const uploadedImage = await cloudinaryUploadImage(data);
-
-        //@ts-ignore
-        return getPathImgCloudinary(uploadedImage);
-      } catch (e) {
-        return "";
-      }
-    },
-
-    createMemoryUploadHandler()
-  );
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
@@ -91,6 +73,18 @@ export async function loader({ request }: LoaderArgs) {
   return json({ post, isEdit: true });
 }
 
+const getRandomCoverImage = () => {
+  const images = [
+    "v1669533646/cld-sample.jpg",
+    "v1669533646/cld-sample-2.jpg",
+    "v1669533646/cld-sample-3.jpg",
+    "v1669533646/cld-sample-4.jpg",
+    "v1669533646/cld-sample-5.jpg",
+  ];
+
+  return images[Math.floor(Math.random() * 5)];
+};
+
 export async function action({ request }: ActionArgs) {
   let defaultErrorObj = {
     title: null,
@@ -103,16 +97,8 @@ export async function action({ request }: ActionArgs) {
 
   const userId = await requireUserId(request);
 
-  // const formDatad = await request.formData();
-  // const isPublishddd = !isEmptyOrNotExist(formDatad.get("isPublish"));
-  // console.log("isPublishddd", isPublishddd, formDatad.get("isPublish"))
-
-  // return json({});
   // Collect form data
-  const formData = await parseMultipartFormData(
-    request,
-    uploadImageHandler("coverImage")
-  );
+  const formData = await request.formData();
   const slug = formData.get("slug");
   const title = formData.get("title");
   const preface = formData.get("preface");
@@ -161,26 +147,12 @@ export async function action({ request }: ActionArgs) {
       );
     }
 
-    // Handle validate upload image
-  if (isEmptyOrNotExist(coverImage)) {
-    return json(
-      {
-        errors: {
-          ...defaultErrorObj,
-          coverImage:
-            "Fail to upload your cover image. It's require. Please try again!",
-        },
-      },
-      { status: 400 }
-    );
-  }
-
     // Create new post
     const newPost = await createPost({
       title,
       preface,
       body,
-      coverImage,
+      coverImage: getRandomCoverImage(),
       isPublish,
       userId,
       slug: convertUrlSlugFormat(title),
@@ -191,14 +163,13 @@ export async function action({ request }: ActionArgs) {
 
   // Update post if method is 'POST'
   if (request.method.toUpperCase() === "PATCH" && !isEmptyOrNotExist(postId)) {
-
-    if (post === null || (post.id === postId)) {
+    if (post === null || post.id === postId) {
       const updatedPost = await updatePost({
         id: postId,
         title,
         preface,
         body,
-        coverImage,
+        coverImage: null,
         isPublish,
         slug: convertUrlSlugFormat(title),
       });
@@ -221,12 +192,16 @@ export default function PostEditorForm() {
     post: Post;
     isEdit: boolean;
   };
+  const { state: transitionState } = useTransition();
+  const isSumitting = transitionState === "submitting";
 
   const postTitle = isEdit ? post.title : "";
   const postPreface = isEdit ? post.preface : "";
   const postBody = isEdit ? post.body : "";
   const postSlug = isEdit ? post.slug : "";
-  const postCoverImage = isEdit ? ROUTERS.LOADER_IMAGE + post.coverImage : "";
+  const postCoverImage = isEdit
+    ? ROUTERS.LOADER_CLOUDINARY_IMAGE + post.coverImage
+    : "";
   const postIsPublish = isEdit ? post.isPublish : false;
 
   const [postPreview, setNotePreview] = React.useState({
@@ -235,8 +210,6 @@ export default function PostEditorForm() {
     body: postBody,
     slug: postSlug,
   });
-  const [postCoverImagePreview, setPostCoverImage] =
-    React.useState<string>(postCoverImage);
 
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
@@ -248,9 +221,6 @@ export default function PostEditorForm() {
   const isPrefaceError = !isEmptyOrNotExist(actionData?.errors?.preface);
   const isBodyError = !isEmptyOrNotExist(actionData?.errors?.body);
   const isSlugError = !isEmptyOrNotExist(actionData?.errors?.slug);
-  const isUploadCoverImageError = !isEmptyOrNotExist(
-    actionData?.errors?.coverImage
-  );
 
   React.useEffect(() => {
     if (isTitleError) {
@@ -266,16 +236,6 @@ export default function PostEditorForm() {
       slugRef.current?.focus();
     }
   });
-
-  const onUploadCoverImage = (e: any) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setPostCoverImage("");
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(e.target.files[0]);
-    setPostCoverImage(objectUrl);
-  };
 
   return (
     <>
@@ -296,40 +256,51 @@ export default function PostEditorForm() {
             id="form-editor"
           >
             <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
-              <a href={ROUTERS.DASHBOARD}>Return</a>
+              <a
+                href={ROUTERS.DASHBOARD + "/posts/" + (post?.slug || "")}
+                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
+              >
+                <img alt="return" src="/assets/icons/back.svg" />
+                Return
+              </a>
               <div className="flex items-center gap-4">
                 <SwitchButton
                   label="Publish"
                   name="isPublish"
                   isChecked={postIsPublish}
                 />
-                <button type="submit" className="p-2 text-sm text-white">
-                  <strong>Save</strong>
+                <button
+                  type="submit"
+                  disabled={isSumitting}
+                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 focus:ring-sky-800 active:scale-90 active:bg-sky-700"
+                >
+                  {transitionState === "submitting" && (
+                    <svg
+                      className="-ml-1 mr-3 h-3 w-3 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                  )}
+                  Save
                 </button>
               </div>
             </div>
             <div className="flex h-full flex-1 flex-col px-1">
-              {/* ---Cover image --- */}
-              <label
-                htmlFor="img-field"
-                className="text-stale flex w-full flex-col gap-1 text-sm"
-              >
-                Upload your post cover image here
-                <input
-                  id="img-field"
-                  type="file"
-                  name="coverImage"
-                  accept="image/*"
-                  readOnly
-                  onChange={onUploadCoverImage}
-                />
-                {isUploadCoverImageError && (
-                  <div className="pt-1 text-red-700" id="body-error">
-                    {actionData!.errors.coverImage}
-                  </div>
-                )}
-              </label>
-
               {/* ---Title--- */}
               <label className="text-stale flex w-full flex-col gap-1 text-sm">
                 Title
@@ -406,7 +377,16 @@ export default function PostEditorForm() {
                 className="text-stale flex w-full flex-1 flex-col gap-1 text-sm"
                 style={{}}
               >
-                Body
+                <span>
+                  Body in{" "}
+                  <a
+                    className="text-sky-400 hover:underline"
+                    href="https://www.markdownguide.org/basic-syntax/"
+                    target="blank"
+                  >
+                    Markdown syntax
+                  </a>
+                </span>
                 <textarea
                   ref={bodyRef}
                   name="body"
@@ -432,7 +412,7 @@ export default function PostEditorForm() {
             </div>
           </Form>
         </div>
-        <div className="flex h-full flex-1 flex-col border-l-2 border-gray-400">
+        <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
           <div className="w-100 flex h-8 items-center justify-center bg-slate-600 p-2 text-sm text-white">
             <h2 className="">Post preview</h2>
           </div>
@@ -459,6 +439,26 @@ export default function PostEditorForm() {
                 <em className="text-slate-400">Your preface goes here</em>
               )}
             </h3>
+
+            <label className="text-stale my-3 flex w-full flex-col gap-1 text-sm">
+              <em className="text-stale my-3 text-sm">
+                Your preview post cover image goes here
+              </em>
+              {isEmptyOrNotExist(post?.coverImage) ? (
+                <div className="b-col my-2 mx-auto inline-block h-10 w-10 rounded-md border-2 border-gray-200 shadow-lg"></div>
+              ) : (
+                <img
+                  alt="preview-cover"
+                  className="my-8 mx-auto rounded-md shadow-lg"
+                  width={300}
+                  src={
+                    post?.coverImage
+                      ? ROUTERS.LOADER_CLOUDINARY_IMAGE + post.coverImage
+                      : ""
+                  }
+                />
+              )}
+            </label>
             <label className="text-stale my-3 flex w-full flex-col gap-1 text-sm">
               <em>Your preview post slug goes here</em>
               <input
@@ -470,25 +470,10 @@ export default function PostEditorForm() {
                 disabled
               />
             </label>
-            <label className="text-stale my-3 flex w-full flex-col gap-1 text-sm">
-              <em className="text-stale my-3 text-sm">
-                Your preview post cover image goes here
-              </em>
-              {isEmptyOrNotExist(postCoverImagePreview) ? (
-                <div className="b-col my-8 mx-auto inline-block h-10 w-10 rounded-md border-2 border-gray-200 shadow-lg"></div>
-              ) : (
-                <img
-                  alt="preview-cover"
-                  className="my-8 mx-auto rounded-md shadow-lg"
-                  width={300}
-                  src={postCoverImagePreview}
-                />
-              )}
-            </label>
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 overflow-scroll rounded border-2 border-gray-100">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100">
               <TextWithMarkdown
                 customClasses="flex-1 text-xs absolute"
                 text={postPreview.body}

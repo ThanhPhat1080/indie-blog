@@ -1,93 +1,92 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
-import { useUser } from "~/utils";
 import { getPostListItems } from "~/models/note.server";
-import stylesMarkdowPreview from "~/styles/markdown-preview.css";
+import { PostCard } from "~/components";
+import type { Post } from "@prisma/client";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const postListItems = await getPostListItems({ userId });
+  const postListItems: Post[] = await getPostListItems({ userId });
 
-  const url = new URL(request.url);
-  const id = url.searchParams.get("id");
-
-  return json({ postListItems, editingPostId: id });
+  return json({ postListItems });
 }
 
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesMarkdowPreview }];
-};
-
 export default function PostPage() {
-  const data = useLoaderData<typeof loader>();
-  const user = useUser();
+  const { postListItems } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex h-full min-h-screen flex-col">
-      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
-        <h1 className="text-3xl font-bold">
-          <Link to=".">Notes</Link>
-        </h1>
-        <p>{user.email}</p>
-        <Form action="/logout" method="post">
-          <button
-            type="submit"
-            className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
+    <div className="flex">
+      <div className="sticky top-0 h-[calc(_100vh_-_120px_)] max-h-screen w-96 border-spacing-2 overflow-y-auto overflow-x-hidden border-r-2 border-gray-300 pt-5 pb-[100px] xl:w-96">
+        <nav className="flex min-h-[calc(_100vh_-_240px_)] flex-col px-6 pb-10">
+          {postListItems.map((post) => (
+            <div key={post.id} className="relative my-2">
+              <NavLink to={post.slug}>
+                {({ isActive }) =>
+                  isActive ? (
+                    <span className="absolute left-[-6px] top-[-8px] z-20 flex h-5 w-5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+                      <span className="relative inline-flex h-5 w-5 rounded-full bg-orange-500"></span>
+                    </span>
+                  ) : null
+                }
+              </NavLink>
+              <PostCard
+                {...post}
+                createdAt={new Date(post.createdAt)}
+                updatedAt={new Date(post.updatedAt)}
+              />
+            </div>
+          ))}
+        </nav>
+        <div
+          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-gray-300 bg-slate-800 p-6"
+          style={{ width: "inherit" }}
+        >
+          <Link
+            to="./../formEditor-test"
+            className="m-auto inline-flex w-full items-center justify-center rounded-md bg-green-500 p-2 text-center text-xl text-white duration-300 ease-in-out hover:scale-105 hover:bg-green-600 focus:scale-110 focus:outline-none focus:ring-green-800 active:scale-100 active:bg-green-800"
           >
-            Logout
-          </button>
-        </Form>
-      </header>
-
-      <main className="flex flex-1 flex-row">
-        <aside className="h-full w-80 border-r bg-gray-100">
-          <Link to="formEditor" className="block p-4 text-xl text-blue-500">
-            + New Note
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              enableBackground="new 0 0 50 50"
+              height="30px"
+              id="Layer_1"
+              version="1.1"
+              viewBox="0 0 50 50"
+              width="30px"
+            >
+              <rect fill="none" height="50" width="50" />
+              <line
+                fill="none"
+                stroke="#ffffff"
+                strokeMiterlimit="10"
+                strokeWidth="4"
+                x1="9"
+                x2="41"
+                y1="25"
+                y2="25"
+              />
+              <line
+                fill="none"
+                stroke="#ffffff"
+                strokeMiterlimit="10"
+                strokeWidth="4"
+                x1="25"
+                x2="25"
+                y1="9"
+                y2="41"
+              />
+            </svg>
+            Create new post
           </Link>
-          <hr />
-          {data.postListItems.length === 0 ? (
-            <p className="p-4">No notes yet</p>
-          ) : (
-            <ol>
-              {data.postListItems.map((post) => {
-                const isEditing = data.editingPostId === post.id;
-                return (
-                  <li key={post.id}>
-                    <NavLink
-                      className={({ isActive }) =>
-                        `flex flex-col relative border-b border-gray-200 p-4 text-xl ${
-                          isActive ? "bg-gray-200" : ""
-                        } ${isEditing ? 'bg-sky-100' : ''}`
-                      }
-                      to={post.slug}
-                    >
-                      {isEditing && (
-                        <div className="flex gap-3 items-center absolute top-0">
-                          <span className="flex h-3 w-3 relative">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                            <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
-                          
-                          </span>
-                          <em className="text-xs text-sky-400">Editing...</em>
-                        </div>
-                      )}
-                      <strong className="my-2 text-lg">📝 {post.title}</strong>
-                      <em className="text-sm">{post.preface}</em>
-                    </NavLink>
-                  </li>
-                );
-              })}
-            </ol>
-          )}
-        </aside>
-
-        <div className="flex-1">
-          <Outlet />
         </div>
-      </main>
+      </div>
+      <div className="h-[calc(_100vh_-_120px_)] max-h-screen flex-1 overflow-y-auto overflow-x-hidden">
+        <Outlet />
+      </div>
     </div>
   );
 }

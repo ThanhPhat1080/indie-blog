@@ -1,10 +1,10 @@
 .text-with-markdown {
-    font-family: Arial, sans-serif;
-    margin-top: 5px;
-    padding: 0.6em;
-    overflow: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
+  font-family: Arial, sans-serif;
+  margin-top: 5px;
+  padding: 0.6em;
+  overflow: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .text-with-markdown h1,
@@ -13,107 +13,107 @@
 .text-with-markdown h4,
 .text-with-markdown h5,
 .text-with-markdown h6 {
-    margin-block: 1.5rem 0.8rem;
-    margin-inline: 0;
-    display: block;
-    font-weight: bold;
+  margin-block: 1.5rem 0.8rem;
+  margin-inline: 0;
+  display: block;
+  font-weight: bold;
 }
 
 .text-with-markdown h1 {
-    font-size: 2.5em;
+  font-size: 2.5em;
 }
 
 .text-with-markdown h2 {
-    font-size: 2.2em;
+  font-size: 2.2em;
 }
 
 .text-with-markdown h3 {
-    font-size: 1.8em;
+  font-size: 1.8em;
 }
 
 .text-with-markdown h4 {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 .text-with-markdown h5 {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 .text-with-markdown h6 {
-    font-size: 1em;
+  font-size: 1em;
 }
 
 .text-with-markdown p {
-    margin-block: 1rem 0.8rem;
-    margin-inline: 0;
-    display: block;
-    font-size: 1em;
+  margin-block: 1rem 0.8rem;
+  margin-inline: 0;
+  display: block;
+  font-size: 1em;
 }
 
 .text-with-markdown ul,
 .text-with-markdown ol {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
 }
 
 .text-with-markdown ol {
-    list-style-type: decimal;
+  list-style-type: decimal;
 }
 
 .text-with-markdown ul {
-    list-style-type: disc;
+  list-style-type: disc;
 }
 
 .text-with-markdown li {
-    display: list-item;
-    text-align: -webkit-match-parent;
+  display: list-item;
+  text-align: -webkit-match-parent;
 }
 
 .text-with-markdown blockquote {
-    border-left: 5px solid gray;
-    padding-left: 1em;
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 40px;
-    margin-inline-end: 40px;
+  border-left: 5px solid gray;
+  padding-left: 1em;
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 40px;
+  margin-inline-end: 40px;
 }
 
 .text-with-markdown a:-webkit-any-link {
-    color: -webkit-link;
-    cursor: pointer;
-    text-decoration: underline;
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .text-with-markdown strong {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .text-with-markdown em {
-    font-size: italic;
+  font-size: italic;
 }
 
 .text-with-markdown hr {
-    display: block;
-    unicode-bidi: isolate;
-    margin-block-start: 0.5em;
-    margin-block-end: 0.5em;
-    margin-inline-start: auto;
-    margin-inline-end: auto;
-    overflow: hidden;
-    border-style: inset;
-    border-width: 2px;
+  display: block;
+  unicode-bidi: isolate;
+  margin-block-start: 0.5em;
+  margin-block-end: 0.5em;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+  overflow: hidden;
+  border-style: inset;
+  border-width: 2px;
 }
 
 .text-with-markdown pre {
-    display: block;
-    font-family: monospace;
-    white-space: pre;
-    margin: 1em 0px;
-    padding: 1em;
-    background-color: gainsboro;
+  display: block;
+  font-family: monospace;
+  white-space: pre;
+  margin: 1em 0px;
+  padding: 1em;
+  background-color: gainsboro;
 }
