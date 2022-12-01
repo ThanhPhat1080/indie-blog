@@ -11,12 +11,11 @@ model User {
   id        String    @id @default(cuid())
   email     String    @unique
   name      String
-  avatar    String?
-  twitter   String?
-  bio       String?
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  avatar    String?
+  bio       String?
+  twitter   String?
   password  Password?
   posts     Post[]
 }

@@ -3,9 +3,9 @@ import {
   writeAsyncIterableToWritable,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import { v2 as cloudinary } from "cloudinary";
+import { getPathImgCloudinary } from "./utils";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,

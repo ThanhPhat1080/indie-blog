@@ -37,6 +37,8 @@ export async function action({ request }: ActionArgs) {
   const name = formData.get("name");
   const email = formData.get("email");
   const password = formData.get("password");
+  const bio = formData.get("bio") as string;
+  const twitter = formData.get("twitter") as string;
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   if (!validateUserName(name)) {
@@ -83,7 +85,13 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await createUser(toTitleCase(name), email, password);
+  const user = await createUser({
+    name: toTitleCase(name),
+    email,
+    password,
+    bio,
+    twitter,
+  });
 
   return createUserSession({
     request,
@@ -224,6 +232,39 @@ export default function Register() {
                   {actionData!.errors.password}
                 </div>
               )}
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="bio"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Your bio
+            </label>
+            <div className="mt-1">
+              <textarea
+                rows={5}
+                id="bio"
+                name="bio"
+                autoComplete="bio"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="twitter"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Your Twitter user name
+            </label>
+            <div className="mt-1">
+              <input
+                id="twitter"
+                name="twitter"
+                autoComplete="twitter"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
             </div>
           </div>
 

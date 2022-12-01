@@ -2,7 +2,6 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import {
   Form,
   Link,
-  Outlet,
   useActionData,
   useOutletContext,
 } from "@remix-run/react";
@@ -15,12 +14,11 @@ import type { User } from "@prisma/client";
 import {
   json,
   redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import React from "react";
 import { uploadImageHandler } from "~/cloudinaryUtils.server";
+import { CloudinaryImageLoader } from "~/components";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -55,8 +53,8 @@ export async function action({ request }: ActionArgs) {
     const name = formData.get("name");
     const bio = formData.get("bio") as string;
     const twitter = formData.get("twitter") as string;
-    const avatar = formData.get("avatar") as String;
-
+    const avatar = formData.get("avatar") as string;
+    console.log("avatar", avatar);
     if (isEmptyOrNotExist(name)) {
       return json(
         {
@@ -71,7 +69,7 @@ export async function action({ request }: ActionArgs) {
       name,
       bio,
       twitter,
-      avatar: avatar || "",
+      avatar,
     });
 
     if (!updatedUser) {
@@ -90,14 +88,14 @@ export async function action({ request }: ActionArgs) {
 export default function ProfileEdit() {
   const actionData = useActionData<typeof action>();
   const user = useOutletContext<User>();
-  const [avatarPreview, setAvatarPreview] = React.useState(user.avatar || "");
+  const [avatarPreview, setAvatarPreview] = React.useState("");
 
   const isNameError = !isEmptyOrNotExist(actionData?.errors?.name);
   const isServerError = !isEmptyOrNotExist(actionData?.errors?.serverError);
 
   const onUploadAvatarImage = (e: any) => {
     if (!e.target.files || e.target.files.length === 0) {
-      setAvatarPreview(user.avatar || '');
+      setAvatarPreview("");
       return;
     }
 
@@ -107,16 +105,34 @@ export default function ProfileEdit() {
 
   return (
     <div className="h-full w-full">
-      <Form method="patch">
+      <Form method="patch" encType="multipart/form-data">
         <div className="text-md my-2 mx-auto flex flex-col gap-4">
           <div className="my-2 mx-auto">
-            <img
-              className="h-60 w-60 rounded-full"
-              src={avatarPreview}
-              height="240"
-              width="240"
-              alt={user.name + "-avatar"}
-            />
+            {avatarPreview ? (
+              <img
+                className="h-60 w-60 rounded-full"
+                src={avatarPreview}
+                height="240"
+                width="240"
+                alt={user.name + "-avatar"}
+              />
+            ) : (
+              <CloudinaryImageLoader
+                className="h-60 w-60 rounded-full"
+                src={user.avatar || ""}
+                height="240"
+                width="240"
+                alt={user.name + "-avatar"}
+                responsive={[
+                  {
+                    size: {
+                      width: 100,
+                    },
+                    maxWidth: 800,
+                  },
+                ]}
+              />
+            )}
           </div>
           <label
             htmlFor="avatar-field"
@@ -126,9 +142,8 @@ export default function ProfileEdit() {
             <input
               id="avatar-field"
               type="file"
-              name="coverImage"
+              name="avatar"
               accept="image/*"
-              readOnly
               onChange={onUploadAvatarImage}
             />
           </label>

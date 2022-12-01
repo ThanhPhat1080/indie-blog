@@ -1,5 +1,6 @@
 import type { User } from "@prisma/client";
 import { Link, useOutletContext } from "@remix-run/react";
+import { CloudinaryImageLoader } from "~/components";
 import { isEmptyOrNotExist } from "~/utils";
 
 export default function Profile() {
@@ -8,12 +9,20 @@ export default function Profile() {
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="my-2 mx-auto">
-        <img
+        <CloudinaryImageLoader
           className="h-60 w-60 rounded-full"
-          src={user.avatar || ''}
+          src={user.avatar || ""}
           height="240"
           width="240"
-          alt={user.name + '-avatar'}
+          alt={user.name + "-avatar"}
+          responsive={[
+            {
+              size: {
+                width: 100,
+              },
+              maxWidth: 800,
+            },
+          ]}
         />
       </div>
       <p className="my-2 text-center text-2xl">{user.name}</p>
@@ -33,9 +42,7 @@ export default function Profile() {
                 d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"
               ></path>
             </svg>
-            <em className="flex-1">
-            {user.bio}
-            </em>
+            <em className="flex-1">{user.bio}</em>
           </p>
         )}
 
@@ -58,7 +65,13 @@ export default function Profile() {
                 fill="#fff"
               />
             </svg>
-            <a href={`https://twitter.com/${user.twitter}`} className="flex-1 text-sky-500 hover:underline" target='blank'><em>@{user.twitter}</em></a>
+            <a
+              href={`https://twitter.com/${user.twitter}`}
+              className="flex-1 text-sky-500 hover:underline"
+              target="blank"
+            >
+              <em>@{user.twitter}</em>
+            </a>
           </p>
         )}
       </div>
