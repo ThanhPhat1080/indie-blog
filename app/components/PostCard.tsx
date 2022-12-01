@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
 
 export const PostCard = (props: Partial<Post>) => {
-  const { title, preface, isPublish, slug, coverImage, updatedAt } = props;
+  const { title, preface, isPublish, slug = "", coverImage, updatedAt } = props;
   return (
     <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
       <Link to={slug}>

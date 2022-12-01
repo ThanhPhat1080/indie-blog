@@ -3,7 +3,6 @@ import * as React from "react";
 /// TODO: check slug before upload image
 
 import type {
-  UploadHandler,
   ActionArgs,
   LinksFunction,
   MetaFunction,
@@ -12,8 +11,6 @@ import type {
 import {
   json,
   redirect,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import {
@@ -22,7 +19,7 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import stylesMarkdowPreview from "~/styles/markdown-preview.css";
+import stylesMarkdownPreview from "~/styles/markdown-preview.css";
 
 import type { Post } from "~/models/note.server";
 import {
@@ -43,7 +40,7 @@ import { uploadImageHandler } from "~/cloudinaryUtils.server";
 export const links: LinksFunction = () => {
   return [
     ...SwitchButtonLink(),
-    { rel: "stylesheet", href: stylesMarkdowPreview },
+    { rel: "stylesheet", href: stylesMarkdownPreview },
   ];
 };
 
@@ -199,7 +196,7 @@ export default function PostEditorForm() {
     isEdit: boolean;
   };
   const { state: transitionState } = useTransition();
-  const isSumitting = transitionState === "submitting";
+  const isSubmitting = transitionState === "submitting";
 
   const postTitle = isEdit ? post.title : "";
   const postPreface = isEdit ? post.preface : "";
@@ -292,7 +289,7 @@ export default function PostEditorForm() {
                 />
                 <button
                   type="submit"
-                  disabled={isSumitting}
+                  disabled={isSubmitting}
                   className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 focus:ring-sky-800 active:scale-90 active:bg-sky-700"
                 >
                   {transitionState === "submitting" && (
