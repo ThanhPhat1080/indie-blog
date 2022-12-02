@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { Form, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { getUserById } from "~/models/user.server";
+import type { User } from "@prisma/client";
 
 import { requireUserId } from "~/session.server";
 
@@ -13,7 +14,7 @@ export const links = () => [{ rel: "stylesheet", href: remixImageStyles }];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
-  const user = await getUserById(userId);
+  const user: User | null = await getUserById(userId);
 
   if (!user) {
     return json({
@@ -23,7 +24,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     });
   }
 
-  return json({ user, error: null, status: 200 });
+  return json({ user: user!, error: null, status: 200 });
 };
 
 const Dashboard = () => {
@@ -36,7 +37,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex flex-col bg-slate-800 text-white">
+    <div className="flex flex-col bg-slate-800 text-white h-screen">
       <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg text-gray-400">
         <h2 className="flex-1 text-3xl">
           Welcome back,{" "}

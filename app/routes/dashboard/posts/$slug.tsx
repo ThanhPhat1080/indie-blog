@@ -15,10 +15,14 @@ import { isEmptyOrNotExist } from "~/utils";
 import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import ROUTERS from "~/constants/routers";
-import stylesMarkdowPreview from "~/styles/markdown-preview.css";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: stylesMarkdowPreview }];
+  return [
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
+    },
+  ];
 };
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -114,7 +118,7 @@ export default function NoteDetailsPage() {
 
           <section className="py-6">
             {/* @ts-ignore */}
-            <TextWithMarkdown text={sanitizeHtml(marked(post.body))} />
+            <TextWithMarkdown text={sanitizeHtml(marked(post.body))} style={{background: 'rgb(30 41 59)'}} />
           </section>
           <hr className="my-4" />
         </article>

@@ -82,7 +82,7 @@ export async function action({ request }: ActionArgs) {
 
 export default function ProfileEdit() {
   const actionData = useActionData<typeof action>();
-  const user = useOutletContext<User>();
+  const user: User = useOutletContext<User>();
   const [avatarPreview, setAvatarPreview] = React.useState("");
 
   const isNameError = !isEmptyOrNotExist(actionData?.errors?.name);
@@ -101,7 +101,7 @@ export default function ProfileEdit() {
   return (
     <div className="h-full w-full">
       <Form method="patch" encType="multipart/form-data">
-        <div className="text-md my-2 mx-auto flex flex-col gap-4">
+        <div className="text-md mx-auto flex flex-col gap-4">
           <div className="my-2 mx-auto">
             {avatarPreview ? (
               <img
@@ -121,7 +121,7 @@ export default function ProfileEdit() {
                 responsive={[
                   {
                     size: {
-                      width: 100,
+                      width: 200,
                     },
                     maxWidth: 800,
                   },
