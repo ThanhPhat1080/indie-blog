@@ -18,13 +18,16 @@ const allowedAttributes = Object.assign(
 export default function TextWithMarkdown({
   text = "",
   customClasses = "",
+  style = {}
 }: {
   text?: String;
   customClasses?: String;
+  style?: object
 }) {
   return (
     <div
-      className={`text-with-markdown ${customClasses}`}
+      className={`markdown-body ${customClasses}`}
+      style={style}
       dangerouslySetInnerHTML={{
         //@ts-ignore
         __html: sanitizeHtml(marked(text), {

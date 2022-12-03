@@ -31,6 +31,13 @@ export function getPostListItems({ userId }: { userId: User["id"] }) {
   });
 }
 
+export function getPublishPosts(option?: object) {
+  return prisma.post.findMany({
+    where: { ...option, isPublish: true },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
 export function createPost({
   title,
   preface,

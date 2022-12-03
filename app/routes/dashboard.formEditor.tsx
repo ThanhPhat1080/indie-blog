@@ -19,7 +19,6 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import stylesMarkdownPreview from "~/styles/markdown-preview.css";
 
 import type { Post } from "~/models/note.server";
 import {
@@ -40,7 +39,7 @@ import { uploadImageHandler } from "~/cloudinaryUtils.server";
 export const links: LinksFunction = () => {
   return [
     ...SwitchButtonLink(),
-    { rel: "stylesheet", href: stylesMarkdownPreview },
+    { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css" },
   ];
 };
 
@@ -257,7 +256,7 @@ export default function PostEditorForm() {
 
   return (
     <>
-      <div className="flex h-full">
+      <div className="flex h-screen">
         <div className="h-full flex-1 border-r-2 border-gray-400">
           <Form
             encType="multipart/form-data"
@@ -430,7 +429,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 py-2 px-3 text-sm leading-6 text-black"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 py-2 px-3 text-sm leading-6 text-white bg-slate-800"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -507,10 +506,11 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 px-4 bg-slate-800">
               <TextWithMarkdown
-                customClasses="flex-1 text-xs absolute"
+                customClasses="flex-1 text-xs absolute px-4 py-2"
                 text={postPreview.body}
+                style={{background: 'rgb(30 41 59)'}}
               />
             </div>
           </div>
