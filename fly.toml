@@ -1,4 +1,4 @@
-app = "indie-stack-template"
+app = "indie-blog"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
