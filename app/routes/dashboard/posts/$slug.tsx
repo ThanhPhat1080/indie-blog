@@ -62,7 +62,11 @@ export default function NoteDetailsPage() {
     <div className="relative">
       <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 bg-slate-600 p-2 py-1 text-white">
         <div className="flex items-center gap-4">
-          <Link to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}>
+          <Link
+            prefetch="intent"
+            title="Edit"
+            to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}
+          >
             Edit
           </Link>
           <Form method="delete">
@@ -75,7 +79,7 @@ export default function NoteDetailsPage() {
           </Form>
         </div>
       </div>
-      <div className="mx-auto my-12 flex min-h-screen max-w-3xl flex-col px-3 lg:px-0">
+      <div className="mx-auto my-12 flex min-h-screen max-w-3xl flex-col px-3">
         <article>
           <section className="border-b pb-8">
             <h1 className="text-4xl font-bold">{post.title}</h1>
@@ -118,7 +122,10 @@ export default function NoteDetailsPage() {
 
           <section className="py-6">
             {/* @ts-ignore */}
-            <TextWithMarkdown text={sanitizeHtml(marked(post.body))} style={{background: 'rgb(30 41 59)'}} />
+            <TextWithMarkdown
+              text={sanitizeHtml(marked(post.body))}
+              style={{ fontSize: "1.5em", background: "rgb(30 41 59)" }}
+            />
           </section>
           <hr className="my-4" />
         </article>

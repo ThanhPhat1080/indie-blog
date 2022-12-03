@@ -78,6 +78,7 @@ export default function Profile() {
       <Link
         to="edit"
         prefetch="intent"
+        title="Edit profile"
         className="my-2 mb-2 w-full rounded-lg border border-gray-200 bg-white py-2.5 px-5 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
       >
         Edit profile
