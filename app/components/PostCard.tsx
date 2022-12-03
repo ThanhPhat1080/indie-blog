@@ -43,7 +43,7 @@ export const PostCard = (props: Partial<Post>) => {
             </div>
           )}
         </div>
-        <Link to={slug} title={slug}  prefetch="intent">
+        <Link to={slug} title={slug} prefetch="intent">
           <h5 className="mb-4 max-h-20 overflow-hidden text-lg font-bold tracking-tight text-gray-900 line-clamp-3 dark:text-white">
             {title}
           </h5>
@@ -68,7 +68,8 @@ export const PostCard = (props: Partial<Post>) => {
             <path
               fillRule="evenodd"
               d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clipRule="evenodd" />
+              clipRule="evenodd"
+            />
           </svg>
         </Link>
       </div>

@@ -6,7 +6,7 @@ export default function PostPagePreview() {
     <h2 className="m-10 text-2xl text-white">
       Select post to preview. Or{" "}
       <Link
-      title="Create new post"
+        title="Create new post"
         className="text-sky-500 hover:underline"
         to={`${ROUTERS.DASHBOARD}/formEditor-test`}
       >

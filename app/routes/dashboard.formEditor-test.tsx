@@ -8,10 +8,7 @@ import type {
   MetaFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import {
-  json,
-  redirect,
-} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -389,7 +386,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 py-2 px-3 text-sm leading-6 text-white bg-slate-800"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -475,7 +472,7 @@ export default function PostEditorForm() {
               <TextWithMarkdown
                 customClasses="flex-1 text-xs absolute px-4 py-2"
                 text={postPreview.body}
-                style={{background: 'rgb(30 41 59)'}}
+                style={{ background: "rgb(30 41 59)" }}
               />
             </div>
           </div>

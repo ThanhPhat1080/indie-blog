@@ -65,20 +65,20 @@ export default function PostArticleContentDetail() {
         <h2 className="my-8 text-4xl font-semibold uppercase text-gray-200">
           Relative posts
         </h2>
-      <section className="mx-auto mb-5 flex flex-col w-full px-5 md:px-0 md:w-4/5 lg:max-w-2xl 2xl:max-w-3xl">
-        {data.listPostsRelative.map((post, index) => (
-          <div className="my-5" key={post.id}>
-            <PostArticle
-              {...post}
-              createdAt={new Date(post.createdAt)}
-              updatedAt={new Date(post.updatedAt)}
-            />
-            {index < data.listPostsRelative.length - 1 && (
-              <hr className="line-wavy" />
-            )}
-          </div>
-        ))}
-      </section>
+        <section className="mx-auto mb-5 flex w-full flex-col px-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">
+          {data.listPostsRelative.map((post, index) => (
+            <div className="my-5" key={post.id}>
+              <PostArticle
+                {...post}
+                createdAt={new Date(post.createdAt)}
+                updatedAt={new Date(post.updatedAt)}
+              />
+              {index < data.listPostsRelative.length - 1 && (
+                <hr className="line-wavy" />
+              )}
+            </div>
+          ))}
+        </section>
       </div>
     </>
   );
