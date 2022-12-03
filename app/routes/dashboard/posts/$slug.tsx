@@ -121,8 +121,8 @@ export default function NoteDetailsPage() {
           <hr className="my-4" />
 
           <section className="py-6">
-            {/* @ts-ignore */}
             <TextWithMarkdown
+              //@ts-ignore
               text={sanitizeHtml(marked(post.body))}
               style={{ fontSize: "1.5em", background: "rgb(30 41 59)" }}
             />
