@@ -1,7 +1,6 @@
+import { User } from "@prisma/client";
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
-
-import type { User } from "~/models/user.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -26,7 +25,6 @@ export function safeRedirect(
 
   return to;
 }
-
 /**
  * This base hook is used in other hooks to quickly search for specific data
  * across all loader data using useMatches.
@@ -69,3 +67,66 @@ export function useUser(): User {
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
+
+export function validateUserName(name: unknown): name is string {
+  return typeof name === "string" && name.length >= 8 && name.length <= 100;
+}
+
+export function isEmptyOrNotExist(
+  param: unknown
+): param is null | undefined | string | boolean | number | Object {
+  if (param === null || param === undefined) {
+    return true;
+  }
+
+  if (typeof param === "number") {
+    return param === 0;
+  }
+
+  if (typeof param === "string") {
+    return param.length === 0;
+  }
+
+  if (typeof param === "boolean") {
+    return !param;
+  }
+
+  return Object.keys(param).length === 0;
+}
+
+export function convertUrlSlugFormat(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
+}
+
+export function getPathImgCloudinary(uploadResolved: any): string {
+  if (isEmptyOrNotExist(uploadResolved)) {
+    return "";
+  }
+
+  return `v${uploadResolved.version.toString()}/${uploadResolved.public_id.toString()}.${uploadResolved.format.toString()}`;
+}
+
+export function removeEmptyObjectProperties(object: Object): Object {
+  const returnObj: Object = Object.assign({}, object);
+
+  Object.keys(returnObj).forEach((key) => {
+    const value = returnObj[key as keyof object];
+
+    if (typeof value !== "boolean" && isEmptyOrNotExist(value)) {
+      delete returnObj[key as keyof object];
+    }
+  });
+
+  return returnObj;
+}
+
+export const toTitleCase = (phrase: string) => {
+  return phrase
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};

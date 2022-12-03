@@ -1,40 +1,65 @@
-import type { User, Note } from "@prisma/client";
+import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { isEmptyOrNotExist, removeEmptyObjectProperties } from "~/utils";
 
-export type { Note } from "@prisma/client";
+export type { Post } from "@prisma/client";
 
-export function getNote({
+export function getPost({
   id,
   userId,
-}: Pick<Note, "id"> & {
+}: Pick<Post, "id"> & {
   userId: User["id"];
 }) {
-  return prisma.note.findFirst({
-    select: { id: true, body: true, title: true },
+  return prisma.post.findFirst({
     where: { id, userId },
   });
 }
 
-export function getNoteListItems({ userId }: { userId: User["id"] }) {
-  return prisma.note.findMany({
+export function getPostBySlug(slug: string, userId?: string) {
+  const query = isEmptyOrNotExist(userId) ? { slug } : { slug, userId };
+
+  return prisma.post.findFirst({
+    where: query,
+  });
+}
+
+export function getPostListItems({ userId }: { userId: User["id"] }) {
+  return prisma.post.findMany({
     where: { userId },
-    select: { id: true, title: true },
     orderBy: { updatedAt: "desc" },
   });
 }
 
-export function createNote({
-  body,
+export function getPublishPosts(option?: object) {
+  return prisma.post.findMany({
+    where: { ...option, isPublish: true },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
+export function createPost({
   title,
+  preface,
+  body,
+  slug,
+  isPublish = false,
   userId,
-}: Pick<Note, "body" | "title"> & {
+  coverImage,
+}: Pick<
+  Post,
+  "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"
+> & {
   userId: User["id"];
 }) {
-  return prisma.note.create({
+  return prisma.post.create({
     data: {
       title,
+      preface,
       body,
+      isPublish,
+      slug,
+      coverImage,
       user: {
         connect: {
           id: userId,
@@ -44,11 +69,38 @@ export function createNote({
   });
 }
 
-export function deleteNote({
+export function updatePost({
   id,
+  title,
+  preface,
+  body,
+  slug,
+  isPublish = false,
+  coverImage = null,
+}: Pick<
+  Post,
+  "id" | "title" | "preface" | "body" | "slug" | "isPublish" | "coverImage"
+>) {
+  return prisma.post.update({
+    where: {
+      id,
+    },
+    data: removeEmptyObjectProperties({
+      title,
+      preface,
+      body,
+      isPublish,
+      slug,
+      coverImage,
+    }),
+  });
+}
+
+export function deletePostBySlug({
+  slug,
   userId,
-}: Pick<Note, "id"> & { userId: User["id"] }) {
-  return prisma.note.deleteMany({
-    where: { id, userId },
+}: Pick<Post, "slug"> & { userId: User["id"] }) {
+  return prisma.post.deleteMany({
+    where: { slug, userId },
   });
 }

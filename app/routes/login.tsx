@@ -1,15 +1,26 @@
+import * as React from "react";
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
-import * as React from "react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useSearchParams,
+  useTransition,
+} from "@remix-run/react";
 
 import { createUserSession, getUserId } from "~/session.server";
 import { verifyLogin } from "~/models/user.server";
-import { safeRedirect, validateEmail } from "~/utils";
+import { isEmptyOrNotExist, safeRedirect, validateEmail } from "~/utils";
+
+import ROUTERS from "~/constants/routers";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  if (userId) {
+    return redirect(ROUTERS.ROOT);
+  }
+
   return json({});
 }
 
@@ -17,8 +28,12 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes");
   const remember = formData.get("remember");
+
+  const redirectTo = safeRedirect(
+    formData.get("redirectTo"),
+    `${ROUTERS.DASHBOARD}/profile`
+  );
 
   if (!validateEmail(email)) {
     return json(
@@ -66,23 +81,36 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
+  const transition = useTransition();
+
+  const redirectTo =
+    searchParams.get("redirectTo") || `${ROUTERS.DASHBOARD}/profile`;
   const actionData = useActionData<typeof action>();
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
+  const isEmailError = !isEmptyOrNotExist(actionData?.errors.email);
+  const isPasswordError = !isEmptyOrNotExist(actionData?.errors.password);
+  const isFormSubmission = !isEmptyOrNotExist(transition.submission);
+
   React.useEffect(() => {
-    if (actionData?.errors?.email) {
+    if (isEmailError) {
       emailRef.current?.focus();
-    } else if (actionData?.errors?.password) {
+    }
+    if (isPasswordError) {
       passwordRef.current?.focus();
     }
-  }, [actionData]);
+  });
 
   return (
     <div className="flex min-h-full flex-col justify-center">
       <div className="mx-auto w-full max-w-md px-8">
-        <Form method="post" className="space-y-6">
+        <Form
+          method="post"
+          className="space-y-6"
+          aria-describedby="Login form"
+          aria-details="Login form"
+        >
           <div>
             <label
               htmlFor="email"
@@ -99,13 +127,14 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
+                aria-invalid={isEmailError ? true : undefined}
                 aria-describedby="email-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                defaultValue="admin@admin.com"
               />
-              {actionData?.errors?.email && (
+              {isEmailError && (
                 <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
+                  {actionData!.errors.email}
                 </div>
               )}
             </div>
@@ -125,13 +154,14 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                aria-invalid={actionData?.errors?.password ? true : undefined}
+                aria-invalid={isPasswordError ? true : undefined}
                 aria-describedby="password-error"
                 className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                defaultValue="adminadmin"
               />
-              {actionData?.errors?.password && (
+              {isPasswordError && (
                 <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
+                  {actionData!.errors.password}
                 </div>
               )}
             </div>
@@ -140,31 +170,33 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
+            disabled={isFormSubmission}
+            aria-disabled={isFormSubmission}
             className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
-            Log in
+            {isFormSubmission ? "Logging in" : "Log in"}
           </button>
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+            <label
+              htmlFor="remember"
+              className="ml-2 flex items-center text-sm text-gray-900"
+            >
               <input
                 id="remember"
                 name="remember"
                 type="checkbox"
+                disabled={isFormSubmission}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
+              />{" "}
+              Remember me
+            </label>
             <div className="text-center text-sm text-gray-500">
               Don't have an account?{" "}
               <Link
+              title="Register"
                 className="text-blue-500 underline"
                 to={{
-                  pathname: "/join",
+                  pathname: ROUTERS.REGISTER,
                   search: searchParams.toString(),
                 }}
               >
