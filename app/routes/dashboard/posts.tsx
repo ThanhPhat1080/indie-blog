@@ -46,7 +46,7 @@ export default function PostPage() {
           style={{ width: "inherit" }}
         >
           <Link
-          title='Create new post'
+            title="Create new post"
             to="./../formEditor-test"
             className="m-auto inline-flex w-full items-center justify-center rounded-md bg-green-500 p-2 text-center text-xl text-white duration-300 ease-in-out hover:scale-105 hover:bg-green-600 focus:scale-110 focus:outline-none focus:ring-green-800 active:scale-100 active:bg-green-800"
           >

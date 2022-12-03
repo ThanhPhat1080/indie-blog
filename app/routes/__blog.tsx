@@ -20,8 +20,8 @@ export default function BlogIndex() {
   return (
     <main className="bg-slate-800">
       <div className="mx-auto md:max-w-3xl lg:max-w-5xl 2xl:max-w-7xl">
-        <header className="flex text-lg items-center justify-between px-4 py-4 md:px-0 sm:px-3">
-          <Link to={ROUTERS.ROOT} title='Home'>
+        <header className="flex items-center justify-between px-4 py-4 text-lg sm:px-3 md:px-0">
+          <Link to={ROUTERS.ROOT} title="Home">
             <img
               alt="Blog Logo"
               src="/assets/images/logo.webp"
@@ -42,10 +42,10 @@ export default function BlogIndex() {
             </NavLink>
             <NavLink
               className={({ isActive }) =>
-              `pb-2 decoration-wavy hover:underline ${
-                isActive ? "underline" : ""
-              }`
-            }
+                `pb-2 decoration-wavy hover:underline ${
+                  isActive ? "underline" : ""
+                }`
+              }
               to={ROUTERS.ABOUT_ME}
             >
               About me

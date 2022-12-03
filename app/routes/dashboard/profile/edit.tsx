@@ -178,7 +178,11 @@ export default function ProfileEdit() {
             </p>
           )}
           <div className="mx-auto mt-5 flex w-full items-center justify-end gap-4">
-            <Link title="Cancel and bo back" to="../" className="hover:underline">
+            <Link
+              title="Cancel and bo back"
+              to="../"
+              className="hover:underline"
+            >
               Cancel
             </Link>
             <button

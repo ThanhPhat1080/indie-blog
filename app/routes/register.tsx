@@ -281,7 +281,7 @@ export default function Register() {
             <div className="text-center text-sm text-gray-500">
               Already have an account?{" "}
               <Link
-              title="login"
+                title="login"
                 className="text-blue-500 underline"
                 to={{
                   pathname: "/login",

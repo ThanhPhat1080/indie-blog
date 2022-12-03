@@ -18,11 +18,11 @@ const allowedAttributes = Object.assign(
 export default function TextWithMarkdown({
   text = "",
   customClasses = "",
-  style = {}
+  style = {},
 }: {
   text?: String;
   customClasses?: String;
-  style?: object
+  style?: object;
 }) {
   return (
     <div

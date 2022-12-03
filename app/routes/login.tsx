@@ -193,7 +193,7 @@ export default function LoginPage() {
             <div className="text-center text-sm text-gray-500">
               Don't have an account?{" "}
               <Link
-              title="Register"
+                title="Register"
                 className="text-blue-500 underline"
                 to={{
                   pathname: ROUTERS.REGISTER,

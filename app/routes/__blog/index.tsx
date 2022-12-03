@@ -5,7 +5,6 @@ import { json } from "@remix-run/node";
 
 import { PostArticle } from "~/components";
 
-
 export async function loader() {
   const postArticles = await getPublishPosts();
 
@@ -45,7 +44,7 @@ export default function Index() {
               createdAt={new Date(post.createdAt)}
               updatedAt={new Date(post.updatedAt)}
             />
-            {index < postArticles.length-1 && <hr className="line-wavy" />}
+            {index < postArticles.length - 1 && <hr className="line-wavy" />}
           </div>
         ))}
       </section>
