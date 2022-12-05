@@ -250,7 +250,7 @@ export default function PostEditorForm() {
             }}
             id="form-editor"
           >
-            <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
+            <div className="w-100 flex h-8 items-center justify-between bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
               <a
                 href={ROUTERS.DASHBOARD + "/posts/" + (post?.slug || "")}
                 className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
@@ -386,7 +386,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-cyan-300 dark:bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -408,7 +408,7 @@ export default function PostEditorForm() {
           </Form>
         </div>
         <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
-          <div className="w-100 flex h-8 items-center justify-center bg-slate-600 p-2 text-sm text-white">
+          <div className="w-100 flex h-8 items-center justify-center bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
             <h2 className="">Post preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
@@ -458,7 +458,7 @@ export default function PostEditorForm() {
               <em>Your preview post slug goes here</em>
               <input
                 readOnly
-                className="text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
+                className="dark:text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
                 aria-invalid={isSlugError ? true : undefined}
                 aria-errormessage={isSlugError ? "preface-error" : undefined}
                 value={convertUrlSlugFormat(postPreview.title)}
@@ -468,7 +468,7 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 bg-slate-800">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 bg-cyan-300 dark:bg-slate-800">
               <TextWithMarkdown
                 customClasses="flex-1 text-xs absolute px-4 py-2"
                 text={postPreview.body}

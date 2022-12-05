@@ -59,10 +59,10 @@ export default function PostArticleContentDetail() {
             />
           </section>
         ) : (
-          <p className="text-gray-400">{data.error}</p>
+          <p className="dark:text-gray-400">{data.error}</p>
         )}
 
-        <h2 className="my-8 text-4xl font-semibold uppercase text-gray-200">
+        <h2 className="my-8 text-4xl font-semibold uppercase dark:text-gray-200">
           Relative posts
         </h2>
         <section className="mx-auto mb-5 flex w-full flex-col px-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">

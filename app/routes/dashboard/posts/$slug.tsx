@@ -60,7 +60,7 @@ export default function NoteDetailsPage() {
 
   return (
     <div className="relative">
-      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 bg-slate-600 p-2 py-1 text-white">
+      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 bg-cyan-200 dark:bg-slate-600 p-2 py-1 text-white">
         <div className="flex items-center gap-4">
           <Link
             prefetch="intent"
@@ -96,7 +96,7 @@ export default function NoteDetailsPage() {
               </span>
             </span>
             <div className="my-4 border-l pl-2">
-              <p className="px-3 text-lg italic text-gray-400">
+              <p className="px-3 text-lg italic dark:text-gray-400">
                 {post.preface}
               </p>
             </div>

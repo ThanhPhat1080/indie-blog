@@ -42,7 +42,7 @@ export default function PostPage() {
           ))}
         </nav>
         <div
-          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-gray-300 bg-slate-800 p-6"
+          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-gray-300 bg-cyan-300 dark:bg-slate-800 p-6"
           style={{ width: "inherit" }}
         >
           <Link

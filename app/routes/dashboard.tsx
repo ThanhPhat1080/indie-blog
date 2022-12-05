@@ -37,17 +37,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-slate-800 text-white">
-      <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg text-gray-400">
+    <div className="flex h-screen flex-col bg-amber-50 dark:bg-slate-800 dark:text-slate-300 text-slate-700">
+      <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg dark:text-gray-400">
         <h2 className="flex-1 text-3xl">
           Welcome back,{" "}
-          <em className="font-semibold text-white">{data.user.name}</em>! Have a
+          <em className="font-semibold dark:text-white text-slate-500">{data.user.name}</em>! Have a
           good day <span>&#128536;</span>
         </h2>
         <Form method="post" action={ROUTERS.LOG_OUT}>
           <button
             type="submit"
-            className="item-centers inline-flex w-40 justify-center rounded-lg border border-gray-300 px-4 py-2 text-lg text-white duration-300 hover:scale-105 hover:bg-gray-500 active:scale-90 active:bg-gray-600"
+            className="item-centers inline-flex w-40 justify-center rounded-lg border border-gray-300 px-4 py-2 text-lg text-white duration-300 hover:scale-105 hover:bg-cyan-500 active:scale-90 active:bg-cyan-200"
           >
             <strong>
               Log out ! <span>&#128075;</span>
@@ -78,7 +78,7 @@ const Dashboard = () => {
                   ></path>
                 </svg>
                 <span
-                  className={isActive ? "text-orange-400" : "text-gray-200"}
+                  className={isActive ? "text-orange-400" : "dark:text-gray-200"}
                 >
                   Your Profile
                 </span>
@@ -111,7 +111,7 @@ const Dashboard = () => {
                   />
                 </svg>
                 <span
-                  className={isActive ? "text-orange-400" : "text-gray-200"}
+                  className={isActive ? "text-orange-400" : "dark:text-gray-200"}
                 >
                   Your posts
                 </span>

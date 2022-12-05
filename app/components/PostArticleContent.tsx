@@ -32,7 +32,7 @@ export const PostArticleContent = (
         <div className="my-4 border-l pl-2">
           <p
             aria-details={preface}
-            className="px-3 text-xl italic text-gray-300"
+            className="px-3 text-xl italic dark:text-gray-300"
           >
             {preface}
           </p>

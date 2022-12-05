@@ -7,7 +7,7 @@ import CloudinaryImageLoader from "./CloudinaryImageLoader";
 export const PostCard = (props: Partial<Post>) => {
   const { title, preface, isPublish, slug = "", coverImage, updatedAt } = props;
   return (
-    <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 bg-cyan-300">
       <Link to={slug} title={slug} prefetch="intent">
         <div className="h-40 overflow-hidden rounded-t-lg shadow-lg">
           <CloudinaryImageLoader
@@ -29,7 +29,7 @@ export const PostCard = (props: Partial<Post>) => {
 
       <div className="p-5">
         <div className="flex items-center justify-between py-2">
-          <em className="text-xs text-gray-400">{`Last updated: ${updatedAt
+          <em className="text-xs dark:text-gray-400">{`Last updated: ${updatedAt
             ?.toJSON()
             .slice(0, 10)
             .replace(/-/g, "/")}`}</em>
@@ -38,17 +38,17 @@ export const PostCard = (props: Partial<Post>) => {
               Published
             </div>
           ) : (
-            <div className=" rounded-xl border-2 border-gray-500 px-3 text-gray-500">
+            <div className=" rounded-xl border-2 border-gray-500 px-3 dark:text-gray-500">
               Draft
             </div>
           )}
         </div>
         <Link to={slug} title={slug} prefetch="intent">
-          <h5 className="mb-4 max-h-20 overflow-hidden text-lg font-bold tracking-tight text-gray-900 line-clamp-3 dark:text-white">
+          <h5 className="mb-4 max-h-20 overflow-hidden text-lg font-bold tracking-tight dark:text-gray-900 line-clamp-3 dark:text-white">
             {title}
           </h5>
         </Link>
-        <p className="mb-3 h-10 max-h-10 overflow-hidden text-sm font-normal text-gray-700 line-clamp-2 dark:text-gray-400">
+        <p className="mb-3 h-10 max-h-10 overflow-hidden text-sm font-normal dark:text-gray-700 line-clamp-2 dark:text-gray-400">
           {preface}
         </p>
         <Link
