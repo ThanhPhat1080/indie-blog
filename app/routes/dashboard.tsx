@@ -37,7 +37,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-slate-800 text-white">
+    <div className="flex flex-col bg-slate-800 text-white">
       <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg text-gray-400">
         <h2 className="flex-1 text-3xl">
           Welcome back,{" "}
