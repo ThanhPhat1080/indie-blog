@@ -259,7 +259,7 @@ export default function PostEditorForm() {
 
   return (
     <>
-      <div className="flex h-screen">
+      <div className="flex h-screen dark:bg-slate-600 bg-amber-50 dark:text-slate-200 text-slate-700">
         <div className="h-full flex-1 border-r-2 border-gray-400">
           <Form
             encType="multipart/form-data"
@@ -275,7 +275,7 @@ export default function PostEditorForm() {
             }}
             id="form-editor"
           >
-            <div className="w-100 flex h-8 items-center justify-between bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
+            <div className="w-100 flex h-8 items-center justify-between p-2 text-sm text-slate-200 bg-slate-700">
               <a
                 href={ROUTERS.DASHBOARD}
                 className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
@@ -454,7 +454,7 @@ export default function PostEditorForm() {
           </Form>
         </div>
         <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
-          <div className="w-100 flex h-8 items-center justify-center bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
+          <div className="w-100 flex h-8 items-center justify-center p-2 text-sm text-slate-200 bg-slate-700">
             <h2 className="">Post preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
