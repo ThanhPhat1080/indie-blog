@@ -22,7 +22,7 @@ export const SwitchButton = ({
           className="input-switch hidden"
           value="true"
         />
-        <div className="toggle-path h-5 w-9 rounded-full bg-cyan-200 shadow-inner"></div>
+        <div className="toggle-path h-5 w-9 rounded-full bg-gray-200 shadow-inner"></div>
         <div className="toggle-circle absolute inset-y-0 left-0 h-3.5 w-3.5 rounded-full bg-white shadow"></div>
       </div>
     </label>
