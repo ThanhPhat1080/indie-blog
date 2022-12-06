@@ -349,7 +349,7 @@ export default function PostEditorForm() {
                   ref={titleRef}
                   name="title"
                   autoFocus
-                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+                  className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
                   aria-invalid={isTitleError ? true : undefined}
                   aria-errormessage={isTitleError ? "title-error" : undefined}
                   onChange={(e) =>
@@ -392,7 +392,7 @@ export default function PostEditorForm() {
                 Preface
                 <input
                   name="preface"
-                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+                  className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
                   aria-invalid={isPrefaceError ? true : undefined}
                   aria-errormessage={
                     isPrefaceError ? "preface-error" : undefined
@@ -432,7 +432,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-cyan-300 dark:bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-orange-50 py-2 px-3 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-300 focus:bg-white focus:dark:bg-slate-800"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -473,7 +473,7 @@ export default function PostEditorForm() {
               Your preview post preface goes here
             </em>
 
-            <h3 className="my-4 border-l-2 border-slate-200 pl-2 text-lg text-slate-500">
+            <h3 className="my-4 border-l-2 border-slate-200 pl-2 text-lg">
               {postPreview.preface ? (
                 postPreview.preface
               ) : (
@@ -509,11 +509,11 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 bg-cyan-300 dark:bg-slate-800 px-4">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 dark:bg-slate-800 bg-orange-50">
               <TextWithMarkdown
-                customClasses="flex-1 text-xs absolute px-4 py-2"
+                customClasses="flex-1 text-xs absolute px-4 pt-5 pb-10 rounded-lg"
                 text={postPreview.body}
-                style={{ background: "rgb(30 41 59)" }}
+                style={{background: "inherit"}}
               />
             </div>
           </div>

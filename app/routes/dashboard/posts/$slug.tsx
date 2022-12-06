@@ -74,7 +74,7 @@ export default function NoteDetailsPage() {
           </Form>
         </div>
       </div>
-      <div className="mx-auto my-12 flex min-h-screen max-w-3xl flex-col px-3">
+      <div className="mx-auto my-12 flex min-h-screen max-w-6xl flex-col px-3">
         <PostArticleContent
           {...post}
           createdAt={new Date(post.createdAt)}

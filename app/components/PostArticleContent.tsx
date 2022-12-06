@@ -1,35 +1,11 @@
 import type { Post } from "@prisma/client";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
-import TextWithMarkdown from "./TextWithMarkdown";
-
-import markDownBody from "../styles/mark-down-body.css";
-import lineWavy from "../styles/line-wavy.css";
+import TextWithMarkdown, {links as TextWithMarkdownLinks} from "./TextWithMarkdown";
 import type { LinksFunction } from "@remix-run/node";
 
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
-      crossOrigin: "anonymous",
-      referrerPolicy: "no-referrer",
-      media: "(prefers-color-scheme: dark)",
-    },
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css",
-      crossOrigin: "anonymous",
-      referrerPolicy: "no-referrer",
-      media: "(prefers-color-scheme: light)",
-    },
-    {
-      rel: "stylesheet",
-      href: markDownBody,
-    },
-    {
-      rel: "stylesheet",
-      href: lineWavy,
-    },
+    ...TextWithMarkdownLinks()
   ];
 };
 

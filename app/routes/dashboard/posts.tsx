@@ -19,7 +19,7 @@ export default function PostPage() {
 
   return (
     <div className="flex">
-      <div className="sticky top-0 h-[calc(_100vh_-_120px_)] max-h-screen w-96 border-spacing-2 overflow-y-auto overflow-x-hidden border-r-2 border-gray-300 pt-5 pb-[100px] xl:w-96">
+      <div className="sticky top-0 h-[calc(_100vh_-_120px_)] max-h-screen w-96 border-spacing-2 overflow-y-auto overflow-x-hidden border-r-2 border-slate-600 pt-5 pb-[100px] xl:w-96">
         <nav className="flex min-h-[calc(_100vh_-_240px_)] flex-col px-6 pb-10">
           {postListItems.map((post) => (
             <div key={post.id} className="relative my-2">
@@ -42,7 +42,7 @@ export default function PostPage() {
           ))}
         </nav>
         <div
-          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-gray-300 dark:bg-slate-800 p-6"
+          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-slate-600 dark:bg-slate-800 p-6"
           style={{ width: "inherit" }}
         >
           <Link
