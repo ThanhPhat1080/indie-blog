@@ -18,7 +18,7 @@ export async function loader() {
 
 export default function BlogIndex() {
   return (
-    <main className="bg-cyan-300 dark:bg-slate-800">
+    <main className="bg-cyan-100 dark:bg-slate-800">
       <div className="mx-auto md:max-w-3xl lg:max-w-5xl 2xl:max-w-7xl">
         <header className="flex items-center justify-between px-4 py-4 text-lg sm:px-3 md:px-0">
           <Link to={ROUTERS.ROOT} title="Home">

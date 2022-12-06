@@ -2,8 +2,36 @@ import type { Post } from "@prisma/client";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
 import TextWithMarkdown from "./TextWithMarkdown";
 
-import marked from "marked";
-import sanitizeHtml from "sanitize-html";
+import markDownBody from "../styles/mark-down-body.css";
+import lineWavy from "../styles/line-wavy.css";
+import type { LinksFunction } from "@remix-run/node";
+
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
+      crossOrigin: "anonymous",
+      referrerPolicy: "no-referrer",
+      media: "(prefers-color-scheme: dark)",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css",
+      crossOrigin: "anonymous",
+      referrerPolicy: "no-referrer",
+      media: "(prefers-color-scheme: light)",
+    },
+    {
+      rel: "stylesheet",
+      href: markDownBody,
+    },
+    {
+      rel: "stylesheet",
+      href: lineWavy,
+    },
+  ];
+};
 
 export const PostArticleContent = (
   props: Partial<Post> & { author?: string }
@@ -29,7 +57,7 @@ export const PostArticleContent = (
             </em>
           </span>
         </span>
-        <div className="my-4 border-l pl-2">
+        <div className="my-4 border-l-4 border-slate-500 pl-4">
           <p
             aria-details={preface}
             className="px-3 text-xl italic dark:text-gray-300"
@@ -54,7 +82,7 @@ export const PostArticleContent = (
           ]}
           width="675"
           height="675"
-          className="w-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
 
@@ -63,8 +91,8 @@ export const PostArticleContent = (
       <div className="py-6">
         <TextWithMarkdown
           //@ts-ignore
-          text={sanitizeHtml(marked(body))}
-          style={{ background: "rgb(30 41 59)", fontSize: "1.8em" }}
+          text={body}
+          style={{ background: "transparent", fontSize: "1.8em" }}
         />
       </div>
     </article>

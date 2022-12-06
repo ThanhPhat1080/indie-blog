@@ -7,9 +7,9 @@ import CloudinaryImageLoader from "./CloudinaryImageLoader";
 export const PostCard = (props: Partial<Post>) => {
   const { title, preface, isPublish, slug = "", coverImage, updatedAt } = props;
   return (
-    <div className="relative rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 bg-cyan-300">
+    <div className="relative rounded-xl border border-gray-200 shadow-md dark:border-gray-700 dark:bg-slate-800">
       <Link to={slug} title={slug} prefetch="intent">
-        <div className="h-40 overflow-hidden rounded-t-lg shadow-lg">
+        <div className="h-48 overflow-hidden rounded-lg">
           <CloudinaryImageLoader
             alt={"Post cover image:" + title}
             src={coverImage || ""}
@@ -22,7 +22,7 @@ export const PostCard = (props: Partial<Post>) => {
                 maxWidth: 800,
               },
             ]}
-            className="w-full"
+            className="w-full h-full rounded-lg"
           />
         </div>
       </Link>
@@ -44,18 +44,18 @@ export const PostCard = (props: Partial<Post>) => {
           )}
         </div>
         <Link to={slug} title={slug} prefetch="intent">
-          <h5 className="mb-4 max-h-20 overflow-hidden text-lg font-bold tracking-tight dark:text-gray-900 line-clamp-3 dark:text-white">
+          <h5 className="mb-2 max-h-20 overflow-hidden text-lg font-bold tracking-tight line-clamp-3 dark:text-slate-200 hover:underline">
             {title}
           </h5>
         </Link>
-        <p className="mb-3 h-10 max-h-10 overflow-hidden text-sm font-normal dark:text-gray-700 line-clamp-2 dark:text-gray-400">
+        <p className="mb-1 h-10 max-h-10 overflow-hidden text-sm font-normal dark:text-slate-400 line-clamp-2">
           {preface}
         </p>
         <Link
           to={slug}
           title={slug}
           prefetch="intent"
-          className="inline-flex items-center rounded-lg bg-sky-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-sky-800 focus:outline-none focus:ring-4 focus:ring-sky-300 active:scale-95 dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
+          className="items-center inline-flex justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
         >
           Preview
           <svg

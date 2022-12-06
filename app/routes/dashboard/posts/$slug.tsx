@@ -3,26 +3,21 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import marked from "marked";
-import sanitizeHtml from "sanitize-html";
-
 import type { Post } from "~/models/note.server";
 import { deletePostBySlug, getPostBySlug } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
-import { CloudinaryImageLoader, TextWithMarkdown } from "~/components";
 import { isEmptyOrNotExist } from "~/utils";
 
 import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import ROUTERS from "~/constants/routers";
+import {
+  PostArticleContent,
+  links as PostArticleContentLinks,
+} from "~/components/PostArticleContent";
 
 export const links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
-    },
-  ];
+  return [...PostArticleContentLinks()];
 };
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -60,7 +55,7 @@ export default function NoteDetailsPage() {
 
   return (
     <div className="relative">
-      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 bg-cyan-200 dark:bg-slate-600 p-2 py-1 text-white">
+      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 p-2 py-1 text-slate-200 bg-slate-600">
         <div className="flex items-center gap-4">
           <Link
             prefetch="intent"
@@ -80,55 +75,11 @@ export default function NoteDetailsPage() {
         </div>
       </div>
       <div className="mx-auto my-12 flex min-h-screen max-w-3xl flex-col px-3">
-        <article>
-          <section className="border-b pb-8">
-            <h1 className="text-4xl font-bold">{post.title}</h1>
-            <div className="my-8" />
-            <span className="flex items-center gap-x-4 font-semibold">
-              <span className="flex flex-col">
-                <span>{author.name}</span>
-                <span>
-                  {new Date(post.updatedAt)
-                    .toJSON()
-                    .slice(0, 10)
-                    .replace(/-/g, "/")}
-                </span>
-              </span>
-            </span>
-            <div className="my-4 border-l pl-2">
-              <p className="px-3 text-lg italic dark:text-gray-400">
-                {post.preface}
-              </p>
-            </div>
-          </section>
-
-          <CloudinaryImageLoader
-            alt={post.title}
-            src={post?.coverImage ?? ""}
-            options={{ fit: "contain" }}
-            responsive={[
-              {
-                size: {
-                  width: 500,
-                },
-                maxWidth: 1000,
-              },
-            ]}
-            width="1200"
-            height="675"
-            className="my-12 mx-auto rounded-md shadow-lg"
-          />
-          <hr className="my-4" />
-
-          <section className="py-6">
-            <TextWithMarkdown
-              //@ts-ignore
-              text={sanitizeHtml(marked(post.body))}
-              style={{ fontSize: "1.5em", background: "rgb(30 41 59)" }}
-            />
-          </section>
-          <hr className="my-4" />
-        </article>
+        <PostArticleContent
+          {...post}
+          createdAt={new Date(post.createdAt)}
+          updatedAt={new Date(post.updatedAt)}
+        />
       </div>
     </div>
   );

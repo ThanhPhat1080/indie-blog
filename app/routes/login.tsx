@@ -166,7 +166,7 @@ export default function LoginPage() {
           type="submit"
           disabled={isFormSubmission}
           aria-disabled={isFormSubmission}
-          className="w-full rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
+          className="w-full items-center inline-flex justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
         >
           {isFormSubmission ? "Logging in" : "Log in"}
         </button>

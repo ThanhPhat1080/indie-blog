@@ -2,20 +2,16 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getPost, getPostBySlug, getPublishPosts } from "~/models/note.server";
-import { isEmptyOrNotExist } from "~/utils";
+import { getPostBySlug, getPublishPosts } from "~/models/note.server";
 import type { Post } from "~/models/note.server";
-import { PostArticleContent } from "~/components/PostArticleContent";
+import { PostArticleContent, links as PostArticleContentLinks } from "~/components/PostArticleContent";
+import { PostArticle } from "~/components";
 
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { PostArticle } from "~/components";
 
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
-    },
+    ...PostArticleContentLinks()
   ];
 };
 

@@ -149,7 +149,7 @@ export default function ProfileEdit() {
               name="name"
               autoFocus
               required
-              className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
               aria-invalid={isNameError ? true : undefined}
               aria-errormessage={isNameError ? "name-error" : undefined}
               defaultValue={user?.name || ""}
@@ -159,7 +159,7 @@ export default function ProfileEdit() {
             Bio
             <textarea
               name="bio"
-              className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
               rows={5}
               defaultValue={user?.bio || ""}
             />
@@ -168,7 +168,7 @@ export default function ProfileEdit() {
             Twitter
             <input
               name="twitter"
-              className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
               defaultValue={user?.twitter || ""}
             />
           </label>
@@ -187,7 +187,7 @@ export default function ProfileEdit() {
             </Link>
             <button
               type="submit"
-              className=" inline-flex w-auto items-center justify-center self-end rounded-md bg-green-500 p-2 px-5 text-center text-xl text-white duration-300 ease-in-out hover:scale-105 hover:bg-green-600 focus:scale-110 focus:outline-none focus:ring-green-800 active:scale-100 active:bg-green-800"
+              className="items-center inline-flex justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
             >
               Save
             </button>

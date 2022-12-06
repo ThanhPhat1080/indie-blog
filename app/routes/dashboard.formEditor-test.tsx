@@ -30,13 +30,17 @@ import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
 import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
-
+import markdownBody from "../styles/mark-down-body.css";
 export const links: LinksFunction = () => {
   return [
     ...SwitchButtonLink(),
     {
       rel: "stylesheet",
       href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
+    },
+    {
+      rel: "stylesheet",
+      href: markdownBody,
     },
   ];
 };
@@ -250,7 +254,7 @@ export default function PostEditorForm() {
             }}
             id="form-editor"
           >
-            <div className="w-100 flex h-8 items-center justify-between bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
+            <div className="w-100 flex h-8 items-center justify-between bg-cyan-200 p-2 text-sm text-white dark:bg-slate-600">
               <a
                 href={ROUTERS.DASHBOARD + "/posts/" + (post?.slug || "")}
                 className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
@@ -386,7 +390,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-cyan-300 dark:bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-cyan-300 py-2 px-3 text-sm leading-6 text-white dark:bg-slate-800"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -408,7 +412,7 @@ export default function PostEditorForm() {
           </Form>
         </div>
         <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
-          <div className="w-100 flex h-8 items-center justify-center bg-cyan-200 dark:bg-slate-600 p-2 text-sm text-white">
+          <div className="w-100 flex h-8 items-center justify-center bg-cyan-200 p-2 text-sm text-white dark:bg-slate-600">
             <h2 className="">Post preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
@@ -468,9 +472,9 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 bg-cyan-300 dark:bg-slate-800">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 dark:bg-slate-800 pb-5">
               <TextWithMarkdown
-                customClasses="flex-1 text-xs absolute px-4 py-2"
+                customClasses="flex-1 text-xs absolute px-4 pt-5 pb-10 rounded-lg"
                 text={postPreview.body}
                 style={{ background: "rgb(30 41 59)" }}
               />
