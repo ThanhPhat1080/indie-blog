@@ -1,35 +1,76 @@
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import {
+  convertUrlSlugFormat,
+  isEmptyOrNotExist,
+  removeEmptyObjectProperties,
+} from "~/utils";
 
 export type { Post } from "@prisma/client";
 
-export function getNote({
+export function getPost({
   id,
   userId,
 }: Pick<Post, "id"> & {
   userId: User["id"];
 }) {
   return prisma.post.findFirst({
-    select: { id: true, body: true, title: true },
     where: { id, userId },
   });
 }
 
-export function getNoteListItems({ userId }: { userId: User["id"] }) {
+export function getPostBySlug(slug: string, userId?: string) {
+  const query = isEmptyOrNotExist(userId) ? { slug } : { slug, userId };
+
+  return prisma.post.findFirst({
+    where: query,
+  });
+}
+
+export function getPostListItems({
+  userId,
+  query,
+}: {
+  userId: User["id"];
+  query?: string;
+}) {
+  const whereQuery = isEmptyOrNotExist(query)
+    ? { userId }
+    : {
+        userId,
+        AND: {
+          slug: {
+            contains: convertUrlSlugFormat(query),
+          },
+        },
+      };
+
   return prisma.post.findMany({
-    where: { userId },
-    select: { id: true, title: true },
+    where: whereQuery,
     orderBy: { updatedAt: "desc" },
   });
 }
 
-export function createNote({
+export function getPublishPosts(option?: object) {
+  return prisma.post.findMany({
+    where: { isPublish: true, ...option },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
+export function createPost({
   title,
   preface,
   body,
+  slug,
+  isPublish = false,
   userId,
-}: Pick<Post, "body" | "title" | "preface"> & {
+  coverImage,
+}: Pick<
+  Post,
+  "body" | "title" | "preface" | "isPublish" | "slug" | "coverImage"
+> & {
   userId: User["id"];
 }) {
   return prisma.post.create({
@@ -37,6 +78,9 @@ export function createNote({
       title,
       preface,
       body,
+      isPublish,
+      slug,
+      coverImage,
       user: {
         connect: {
           id: userId,
@@ -46,11 +90,38 @@ export function createNote({
   });
 }
 
-export function deleteNote({
+export function updatePost({
   id,
+  title,
+  preface,
+  body,
+  slug,
+  isPublish = false,
+  coverImage = null,
+}: Pick<
+  Post,
+  "id" | "title" | "preface" | "body" | "slug" | "isPublish" | "coverImage"
+>) {
+  return prisma.post.update({
+    where: {
+      id,
+    },
+    data: removeEmptyObjectProperties({
+      title,
+      preface,
+      body,
+      isPublish,
+      slug,
+      coverImage,
+    }),
+  });
+}
+
+export function deletePostBySlug({
+  slug,
   userId,
-}: Pick<Post, "id"> & { userId: User["id"] }) {
+}: Pick<Post, "slug"> & { userId: User["id"] }) {
   return prisma.post.deleteMany({
-    where: { id, userId },
+    where: { slug, userId },
   });
 }
