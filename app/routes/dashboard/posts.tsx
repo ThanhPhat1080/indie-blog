@@ -13,14 +13,13 @@ import { requireUserId } from "~/session.server";
 import { getPostListItems } from "~/models/note.server";
 import { PostCard } from "~/components";
 import type { Post } from "@prisma/client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { isEmptyOrNotExist } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
   let url = new URL(request.url);
   let query = url.searchParams.get("q") || undefined;
-  console.log("query, ", query);
   const postListItems: Post[] = await getPostListItems({ userId, query });
 
   return json({ postListItems, query });
