@@ -36,7 +36,7 @@ export default function Index() {
         </div>
         <div>
           <img
-            src="assets/images/robot-cute.png"
+            src="assets/images/robot-cute.webp"
             alt="robot-cute-Ouch"
             width={256}
             height={311}
