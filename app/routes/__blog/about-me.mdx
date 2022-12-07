@@ -1,0 +1,20 @@
+---
+meta:
+  title: About me
+  description: It's about me build with markdown. Awesome!
+headers:
+  Cache-Control: max-age=2,592,000
+---
+import {links as TextWithMarkdownLinks} from '~/components/TextWithMarkdown';
+
+export const links = () => {
+  return [
+   ...TextWithMarkdownLinks()
+  ];
+};
+
+<div class='h-screen text-white markdown-body bg-transparent'>
+  # Hello, It's me!
+
+  ## TO BE UPDATE :)
+</div>
