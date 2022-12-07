@@ -7,12 +7,29 @@ import type { Post } from "~/models/note.server";
 import { PostArticleContent, links as PostArticleContentLinks } from "~/components/PostArticleContent";
 import { PostArticle } from "~/components";
 
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 
 export const links: LinksFunction = () => {
   return [
     ...PostArticleContentLinks()
   ];
+};
+
+type LoaderData = { post: Post };
+
+export const meta: MetaFunction = ({
+  data,
+}: {data: LoaderData}) => {
+  if (!data) {
+    return {
+      title: "No blog",
+      description: "No blog found",
+    };
+  }
+  return {
+    title: data.post.title,
+    description: data.post.preface,
+  };
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

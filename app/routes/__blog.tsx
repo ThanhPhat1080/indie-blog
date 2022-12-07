@@ -1,3 +1,4 @@
+import type { MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, NavLink, Outlet } from "@remix-run/react";
 import ROUTERS from "~/constants/routers";
@@ -15,6 +16,22 @@ export async function loader() {
 
   return json({ postArticles });
 }
+
+
+export const meta: MetaFunction = () => {
+  const description = `Robot personal blog`;
+  return {
+    charset: "utf-8",
+    description,
+    keywords: "Remix,Robot,blog",
+    "twitter:image": "https://res.cloudinary.com/diveoh2pp/image/upload/v1670398746/Screenshot_120722_023903_PM_j2w20w.jpg",
+    "twitter:card": "summary_large_image",
+    "twitter:creator": "@phat_truong",
+    "twitter:site": "@phat_truong",
+    "twitter:title": "Remix Blog",
+    "twitter:description": description,
+  };
+};
 
 export default function BlogIndex() {
   return (

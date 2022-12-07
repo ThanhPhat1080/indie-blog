@@ -1,7 +1,7 @@
 import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-import { isEmptyOrNotExist, removeEmptyObjectProperties } from "~/utils";
+import { convertUrlSlugFormat, isEmptyOrNotExist, removeEmptyObjectProperties } from "~/utils";
 
 export type { Post } from "@prisma/client";
 
@@ -24,9 +24,24 @@ export function getPostBySlug(slug: string, userId?: string) {
   });
 }
 
-export function getPostListItems({ userId }: { userId: User["id"] }) {
+export function getPostListItems({
+  userId,
+  query,
+}: {
+  userId: User["id"];
+  query?: string;
+}) {
+  const whereQuery = isEmptyOrNotExist(query) ? {userId}:{
+    userId,
+    AND: {
+        slug: {
+          contains: convertUrlSlugFormat(query)
+        }
+    }
+  }
+  console.log("where", whereQuery)
   return prisma.post.findMany({
-    where: { userId },
+    where: whereQuery,
     orderBy: { updatedAt: "desc" },
   });
 }

@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, Outlet, useLocation, useOutletContext } from "@remix-run/react";
+import { Outlet, useOutletContext } from "@remix-run/react";
 import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import { requireUserId } from "~/session.server";

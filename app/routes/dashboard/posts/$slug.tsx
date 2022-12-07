@@ -1,4 +1,4 @@
-import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LinksFunction, LoaderArgs , MetaFunction} from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -18,6 +18,23 @@ import {
 
 export const links: LinksFunction = () => {
   return [...PostArticleContentLinks()];
+};
+
+type LoaderData = { post: Post };
+
+export const meta: MetaFunction = ({
+  data,
+}: {data: LoaderData}) => {
+  if (!data) {
+    return {
+      title: "No post",
+      description: "No blog found",
+    };
+  }
+  return {
+    title: `Blog: "${data.post.title}"`,
+    description: data.post.preface,
+  };
 };
 
 export async function loader({ request, params }: LoaderArgs) {

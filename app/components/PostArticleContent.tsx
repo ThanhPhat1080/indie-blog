@@ -34,12 +34,12 @@ export const PostArticleContent = (
           </span>
         </span>
         <div className="my-4 border-l-4 border-slate-500 pl-4">
-          <p
+          <blockquote
             aria-details={preface}
             className="px-3 text-xl italic dark:text-gray-300"
           >
             {preface}
-          </p>
+          </blockquote>
         </div>
       </div>
 

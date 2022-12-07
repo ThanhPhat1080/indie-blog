@@ -41,8 +41,11 @@ const Dashboard = () => {
       <div className="w-100 mt-3 mb-5 flex h-10 items-center justify-between gap-4 py-2 px-4 text-lg dark:text-gray-400">
         <h2 className="flex-1 text-3xl">
           Welcome back,
-          <em className="mx-2 font-semibold text-sky-500">{data.user.name}</em>!
-          Have a good day <span>&#128536;</span>
+          <span className=" mx-5 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500 relative inline-block">
+    <em className="relative text-white font-semibold inline-block">{data.user.name}</em>
+  </span>
+
+          ! Have a good day <span>&#128536;</span>
         </h2>
         <Form method="post" action={ROUTERS.LOG_OUT}>
           <button
