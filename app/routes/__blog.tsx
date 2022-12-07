@@ -50,7 +50,7 @@ export default function BlogIndex() {
             <NavLink
               className={({ isActive }) =>
                 `pb-2 decoration-wavy hover:underline ${
-                  isActive ? "underline" : ""
+                  isActive ? "underline text-sky-500" : ""
                 }`
               }
               to={ROUTERS.ROOT}
@@ -60,7 +60,7 @@ export default function BlogIndex() {
             <NavLink
               className={({ isActive }) =>
                 `pb-2 decoration-wavy hover:underline ${
-                  isActive ? "underline" : ""
+                  isActive ? "underline text-sky-500" : ""
                 }`
               }
               to={ROUTERS.ABOUT_ME}

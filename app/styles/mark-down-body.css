@@ -1,3 +1,7 @@
+.markdown-body {
+    background-color: transparent;
+}
+
 .markdown-body img {
     border-radius: 10px;
 }

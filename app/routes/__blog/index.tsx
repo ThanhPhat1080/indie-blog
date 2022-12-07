@@ -27,7 +27,7 @@ export default function Index() {
           <h1 className="my-5 text-3xl lg:text-5xl font-semibold">
             Welcome to the my blog.
           </h1>
-          <em className="text-3xl lg:text-5xl font-semibold ">
+          <em className="text-lg lg:text-3xl font-semibold ">
             Let <em className="text-sky-400 underline decoration-wavy">share</em>{" "}
             and <em className="text-sky-400 underline decoration-wavy">learn</em>{" "}
             together.
