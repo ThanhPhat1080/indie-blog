@@ -1,9 +1,13 @@
 import type { Post } from "@prisma/client";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
-import TextWithMarkdown from "./TextWithMarkdown";
+import TextWithMarkdown, {links as TextWithMarkdownLinks} from "./TextWithMarkdown";
+import type { LinksFunction } from "@remix-run/node";
 
-import marked from "marked";
-import sanitizeHtml from "sanitize-html";
+export const links: LinksFunction = () => {
+  return [
+    ...TextWithMarkdownLinks()
+  ];
+};
 
 export const PostArticleContent = (
   props: Partial<Post> & { author?: string }
@@ -29,13 +33,13 @@ export const PostArticleContent = (
             </em>
           </span>
         </span>
-        <div className="my-4 border-l pl-2">
-          <p
+        <div className="my-4 border-l-4 border-slate-500 pl-4">
+          <blockquote
             aria-details={preface}
-            className="px-3 text-xl italic text-gray-300"
+            className="px-3 text-xl italic dark:text-gray-300"
           >
             {preface}
-          </p>
+          </blockquote>
         </div>
       </div>
 
@@ -54,7 +58,7 @@ export const PostArticleContent = (
           ]}
           width="675"
           height="675"
-          className="w-full object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
 
@@ -63,8 +67,8 @@ export const PostArticleContent = (
       <div className="py-6">
         <TextWithMarkdown
           //@ts-ignore
-          text={sanitizeHtml(marked(body))}
-          style={{ background: "rgb(30 41 59)", fontSize: "1.8em" }}
+          text={body}
+          style={{ background: "transparent", fontSize: "1.8em" }}
         />
       </div>
     </article>

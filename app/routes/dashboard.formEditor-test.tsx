@@ -26,7 +26,7 @@ import {
 import { requireUserId } from "~/session.server";
 
 import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
-
+import {links as TextWithMarkdownLinks} from '~/components/TextWithMarkdown';
 import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
@@ -34,10 +34,7 @@ import ROUTERS from "~/constants/routers";
 export const links: LinksFunction = () => {
   return [
     ...SwitchButtonLink(),
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
-    },
+   ...TextWithMarkdownLinks()
   ];
 };
 
@@ -234,7 +231,7 @@ export default function PostEditorForm() {
 
   return (
     <>
-      <div className="flex h-screen">
+      <div className="flex h-screen dark:bg-slate-600 bg-amber-50 dark:text-slate-200 text-slate-700">
         <div className="h-full flex-1 border-r-2 border-gray-400">
           <Form
             encType="multipart/form-data"
@@ -250,10 +247,10 @@ export default function PostEditorForm() {
             }}
             id="form-editor"
           >
-            <div className="w-100 flex h-8 items-center justify-between bg-slate-600 p-2 text-sm text-white">
+            <div className="w-100 flex h-8 items-center justify-between p-2 text-sm text-slate-200 bg-slate-700">
               <a
                 href={ROUTERS.DASHBOARD + "/posts/" + (post?.slug || "")}
-                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-white duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
+                className="inline-flex items-center gap-1 px-1 text-sm font-semibold text-slate-200 duration-300 ease-in-out hover:scale-110 hover:underline focus:scale-110 active:scale-90"
               >
                 <img alt="return" src="/assets/icons/back.svg" />
                 Return
@@ -267,11 +264,11 @@ export default function PostEditorForm() {
                 <button
                   type="submit"
                   disabled={isSumitting}
-                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-white duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 focus:ring-sky-800 active:scale-90 active:bg-sky-700"
+                  className="inline-flex items-center rounded-md bg-sky-500 px-2 text-sm text-slate-200 duration-300 ease-in-out hover:scale-110 hover:bg-sky-600 focus:scale-110 focus:ring-sky-800 active:scale-90 active:bg-sky-700"
                 >
                   {transitionState === "submitting" && (
                     <svg
-                      className="-ml-1 mr-3 h-3 w-3 animate-spin text-white"
+                      className="-ml-1 mr-3 h-3 w-3 animate-spin text-slate-200"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -303,7 +300,7 @@ export default function PostEditorForm() {
                   ref={titleRef}
                   name="title"
                   autoFocus
-                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+                  className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-slate-200 dark:bg-slate-800"
                   aria-invalid={isTitleError ? true : undefined}
                   aria-errormessage={isTitleError ? "title-error" : undefined}
                   onChange={(e) =>
@@ -346,7 +343,7 @@ export default function PostEditorForm() {
                 Preface
                 <input
                   name="preface"
-                  className="w-full rounded-md border-2 border-gray-100 px-3 text-lg leading-loose text-black"
+                  className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-slate-200 dark:bg-slate-800"
                   aria-invalid={isPrefaceError ? true : undefined}
                   aria-errormessage={
                     isPrefaceError ? "preface-error" : undefined
@@ -386,7 +383,7 @@ export default function PostEditorForm() {
                   ref={bodyRef}
                   name="body"
                   rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-slate-800 py-2 px-3 text-sm leading-6 text-white"
+                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-orange-50 py-2 px-3 text-sm leading-6 text-slate-700 dark:bg-slate-800 dark:text-slate-300 focus:bg-white focus:dark:bg-slate-800"
                   aria-invalid={isBodyError ? true : undefined}
                   aria-errormessage={isBodyError ? "body-error" : undefined}
                   onChange={(e) =>
@@ -408,7 +405,7 @@ export default function PostEditorForm() {
           </Form>
         </div>
         <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
-          <div className="w-100 flex h-8 items-center justify-center bg-slate-600 p-2 text-sm text-white">
+          <div className="w-100 flex h-8 items-center justify-center p-2 text-sm text-slate-200 bg-slate-700">
             <h2 className="">Post preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
@@ -427,7 +424,7 @@ export default function PostEditorForm() {
               Your preview post preface goes here
             </em>
 
-            <h3 className="my-4 border-l-2 border-slate-200 pl-2 text-lg text-slate-500">
+            <h3 className="my-4 border-l-2 border-slate-200 pl-2 text-lg">
               {postPreview.preface ? (
                 postPreview.preface
               ) : (
@@ -458,7 +455,7 @@ export default function PostEditorForm() {
               <em>Your preview post slug goes here</em>
               <input
                 readOnly
-                className="text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
+                className="dark:text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
                 aria-invalid={isSlugError ? true : undefined}
                 aria-errormessage={isSlugError ? "preface-error" : undefined}
                 value={convertUrlSlugFormat(postPreview.title)}
@@ -468,11 +465,11 @@ export default function PostEditorForm() {
             <em className="text-stale my-3 text-sm">
               Your preview post content goes here
             </em>
-            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 bg-slate-800">
+            <div className="relative h-full flex-1 rounded border-t-2 border-gray-100 dark:bg-slate-800 bg-orange-50">
               <TextWithMarkdown
-                customClasses="flex-1 text-xs absolute px-4 py-2"
+                customClasses="flex-1 text-xs absolute px-4 pt-5 pb-10 rounded-lg"
                 text={postPreview.body}
-                style={{ background: "rgb(30 41 59)" }}
+                style={{background: "inherit"}}
               />
             </div>
           </div>

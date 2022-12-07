@@ -2,21 +2,34 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getPost, getPostBySlug, getPublishPosts } from "~/models/note.server";
-import { isEmptyOrNotExist } from "~/utils";
+import { getPostBySlug, getPublishPosts } from "~/models/note.server";
 import type { Post } from "~/models/note.server";
-import { PostArticleContent } from "~/components/PostArticleContent";
-
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { PostArticleContent, links as PostArticleContentLinks } from "~/components/PostArticleContent";
 import { PostArticle } from "~/components";
+
+import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-dark.min.css",
-    },
+    ...PostArticleContentLinks()
   ];
+};
+
+type LoaderData = { post: Post };
+
+export const meta: MetaFunction = ({
+  data,
+}: {data: LoaderData}) => {
+  if (!data) {
+    return {
+      title: "No blog",
+      description: "No blog found",
+    };
+  }
+  return {
+    title: data.post?.title || "Blog",
+    description: data.post?.preface || "",
+  };
 };
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -59,12 +72,12 @@ export default function PostArticleContentDetail() {
             />
           </section>
         ) : (
-          <p className="text-gray-400">{data.error}</p>
+          <p className="dark:text-gray-400">{data.error}</p>
         )}
 
-        <h2 className="my-8 text-4xl font-semibold uppercase text-gray-200">
+        <h4 className="my-8 text-4xl font-semibold uppercase dark:text-gray-200">
           Relative posts
-        </h2>
+        </h4>
         <section className="mx-auto mb-5 flex w-full flex-col px-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">
           {data.listPostsRelative.map((post, index) => (
             <div className="my-5" key={post.id}>

@@ -20,6 +20,7 @@ import {
   validateEmail,
   validateUserName,
 } from "~/utils";
+import { AuthFormLayout } from "~/components";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -139,161 +140,158 @@ export default function Register() {
   });
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
-        <h2 className="text-center text-2xl">Create new account!</h2>
-        <Form
-          method="post"
-          className="space-y-6"
-          aria-describedby="Create user form"
-          aria-details="Create user form"
-        >
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Your name
-            </label>
-            <div className="mt-1">
-              <input
-                ref={nameRef}
-                id="name"
-                required
-                autoFocus={true}
-                name="name"
-                minLength={8}
-                maxLength={100}
-                autoComplete="name"
-                aria-invalid={isNameError ? true : undefined}
-                aria-describedby="name-error"
-                className={`w-full rounded border ${
-                  isNameError ? "border-red-500" : "border-gray-500"
-                } px-2 py-1 text-lg`}
-              />
-              {isNameError && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData!.errors.name}
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email address
-            </label>
-            <div className="mt-1">
-              <input
-                ref={emailRef}
-                id="email"
-                required
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={isEmailError ? true : undefined}
-                aria-describedby="email-error"
-                className={`w-full rounded border ${
-                  isEmailError ? "border-red-500" : "border-gray-500"
-                } px-2 py-1 text-lg`}
-              />
-              {isEmailError && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData!.errors.email}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                ref={passwordRef}
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                aria-invalid={isPasswordError ? true : undefined}
-                aria-describedby="password-error"
-                className={`w-full rounded border ${
-                  isPasswordError ? "border-red-500" : "border-gray-500"
-                } px-2 py-1 text-lg`}
-              />
-              {isPasswordError && (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {actionData!.errors.password}
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="bio"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Your bio
-            </label>
-            <div className="mt-1">
-              <textarea
-                rows={5}
-                id="bio"
-                name="bio"
-                autoComplete="bio"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="twitter"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Your Twitter user name
-            </label>
-            <div className="mt-1">
-              <input
-                id="twitter"
-                name="twitter"
-                autoComplete="twitter"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-              />
-            </div>
-          </div>
-
-          <input type="hidden" name="redirectTo" value={redirectTo} />
-          <button
-            type="submit"
-            disabled={isFormSubmission}
-            aria-disabled={isFormSubmission}
-            className="w-full rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+    <AuthFormLayout formName="register">
+      <Form
+        method="post"
+        className="space-y-6 text-white"
+        aria-describedby="Create user form"
+        aria-details="Create user form"
+      >
+        <div>
+          <label
+            htmlFor="name"
+            className="block"
           >
-            {isFormSubmission ? "Creating..." : "Create Account"}
-          </button>
-          <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
-              <Link
-                title="login"
-                className="text-blue-500 underline"
-                to={{
-                  pathname: "/login",
-                  search: searchParams.toString(),
-                }}
-              >
-                Log in
-              </Link>
-            </div>
+            Your name
+          </label>
+          <div className="mt-1">
+            <input
+              ref={nameRef}
+              id="name"
+              required
+              autoFocus={true}
+              name="name"
+              minLength={8}
+              maxLength={100}
+              autoComplete="name"
+              aria-invalid={isNameError ? true : undefined}
+              aria-describedby="name-error"
+              className={`w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800 ${
+                isNameError ? "border-red-500" : "border-gray-500"
+              }`}
+            />
+            {isNameError && (
+              <div className="pt-1 text-red-700" id="email-error">
+                {actionData!.errors.name}
+              </div>
+            )}
           </div>
-        </Form>
-      </div>
-    </div>
+        </div>
+        <div>
+          <label
+            htmlFor="email"
+            className="block"
+          >
+            Email address
+          </label>
+          <div className="mt-1">
+            <input
+              ref={emailRef}
+              id="email"
+              required
+              name="email"
+              type="email"
+              autoComplete="email"
+              aria-invalid={isEmailError ? true : undefined}
+              aria-describedby="email-error"
+              className={`w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800 ${
+                isEmailError ? "border-red-500" : "border-gray-500"
+              }`}
+            />
+            {isEmailError && (
+              <div className="pt-1 text-red-700" id="email-error">
+                {actionData!.errors.email}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="password"
+            className="block"
+          >
+            Password
+          </label>
+          <div className="mt-1">
+            <input
+              id="password"
+              ref={passwordRef}
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              aria-invalid={isPasswordError ? true : undefined}
+              aria-describedby="password-error"
+              className={`w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800 ${
+                isPasswordError ? "border-red-500" : "border-gray-500"
+              }`}
+            />
+            {isPasswordError && (
+              <div className="pt-1 text-red-700" id="password-error">
+                {actionData!.errors.password}
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <label
+            htmlFor="bio"
+            className="block"
+          >
+            Your bio
+          </label>
+          <div className="mt-1">
+            <textarea
+              rows={5}
+              id="bio"
+              name="bio"
+              autoComplete="bio"
+              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800 "
+            />
+          </div>
+        </div>
+        <div>
+          <label
+            htmlFor="twitter"
+            className="block"
+          >
+            Your Twitter user name
+          </label>
+          <div className="mt-1">
+            <input
+              id="twitter"
+              name="twitter"
+              autoComplete="twitter"
+              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800 "
+            />
+          </div>
+        </div>
+
+        <input type="hidden" name="redirectTo" value={redirectTo} />
+        <button
+          type="submit"
+          disabled={isFormSubmission}
+          aria-disabled={isFormSubmission}
+          className="w-full items-center inline-flex justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
+        >
+          {isFormSubmission ? "Creating..." : "Create Account"}
+        </button>
+        <div className="flex items-center justify-center">
+          <div className="text-center">
+            Already have an account?{" "}
+            <Link
+              title="login"
+              className="dark:text-sky-500 text-sky-800 hover:underline font-bold "
+              to={{
+                pathname: "/login",
+                search: searchParams.toString(),
+              }}
+            >
+              Log in
+            </Link>
+          </div>
+        </div>
+      </Form>
+    </AuthFormLayout>
   );
 }
