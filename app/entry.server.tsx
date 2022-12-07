@@ -27,6 +27,7 @@ export default function handleRequest(
           const body = new PassThrough();
 
           responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set("X-Powered-By", "Hugs");
 
           resolve(
             new Response(body, {

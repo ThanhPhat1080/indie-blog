@@ -1,7 +1,6 @@
-import { useLoaderData,   Meta, } from "@remix-run/react";
+import { useLoaderData, } from "@remix-run/react";
 import { getPublishPosts } from "~/models/note.server";
-import { json, MetaFunction } from "@remix-run/node";
-
+import { json } from "@remix-run/node";
 import { PostArticle } from "~/components";
 
 export async function loader() {
@@ -40,7 +39,6 @@ export default function Index() {
             alt="robot-cute-Ouch"
             width={256}
             height={311}
-            loading="lazy"
             className="flex-1"
           />
         </div>

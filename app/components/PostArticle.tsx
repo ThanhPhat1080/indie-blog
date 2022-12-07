@@ -48,9 +48,9 @@ export const PostArticle = (
           <em className="dark:text-gray-400">{`Last updated: ${updateAtString}`}</em>
         </div>
         <Link to={linkToPostContent} prefetch="intent">
-          <h3 className="mb-4 max-h-20 overflow-hidden pb-2 text-3xl font-bold tracking-tight decoration-wavy line-clamp-3 hover:underline dark:text-gray-300">
+          <h2 className="mb-4 max-h-20 overflow-hidden pb-2 text-3xl font-bold tracking-tight decoration-wavy line-clamp-3 hover:underline dark:text-gray-300">
             {title}
-          </h3>
+          </h2>
         </Link>
         <em className="mb-3 h-10 max-h-10 overflow-hidden text-2xl font-normal line-clamp-3 dark:text-gray-400">
           {preface}
