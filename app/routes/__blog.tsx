@@ -64,6 +64,7 @@ export default function BlogIndex() {
                 }`
               }
               to={ROUTERS.ABOUT_ME}
+              prefetch="intent"
             >
               About me
             </NavLink>
