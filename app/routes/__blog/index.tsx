@@ -1,22 +1,26 @@
-import { useLoaderData, } from "@remix-run/react";
+import { Suspense, use } from "react";
+import { useLoaderData } from "@remix-run/react";
+import type { Post } from "~/models/note.server";
 import { getPublishPosts } from "~/models/note.server";
-import { json } from "@remix-run/node";
-import { PostArticle } from "~/components";
+import { defer } from "@remix-run/node";
+import { CardSkeleton, PostArticle } from "~/components";
+import { isEmptyOrNotExist } from "~/utils";
+import ListPostArticles from "~/components/ListPostArticle";
 
 export async function loader() {
-  const postArticles = await getPublishPosts();
+  const postArticlesAsync = getPublishPosts() as Promise<Post[]>;
 
-  return json({ postArticles });
+  return defer({ postArticlesAsync });
 }
 
 export default function Index() {
-  const { postArticles } = useLoaderData<typeof loader>();
+  const { postArticlesAsync } = useLoaderData();
 
   return (
     <>
-      <section className="flex flex-col sm:flex-row md:h-[calc(_100vh_*_0.6)] items-center gap-8 dark:text-gray-300 w-full lg:w-5/6 mx-auto px-4 lg:px-0">
+      <section className="mx-auto flex w-full flex-col items-center gap-8 px-4 dark:text-gray-300 sm:flex-row md:h-[calc(_100vh_*_0.6)] lg:w-5/6 lg:px-0">
         <div className="flex-1">
-          <h1 className="my-5 text-4xl lg:text-7xl font-semibold">
+          <h1 className="my-5 text-4xl font-semibold lg:text-7xl">
             Hi, I am
             <span className=" relative mx-5 inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-500">
               <em className="relative inline-block font-semibold text-white">
@@ -24,12 +28,14 @@ export default function Index() {
               </em>
             </span>
           </h1>
-          <h1 className="my-5 text-3xl lg:text-5xl font-semibold">
+          <h1 className="my-5 text-3xl font-semibold lg:text-5xl">
             Welcome to the my blog.
           </h1>
-          <em className="text-lg lg:text-3xl font-semibold ">
-            Let <em className="text-sky-400 underline decoration-wavy">share</em>{" "}
-            and <em className="text-sky-400 underline decoration-wavy">learn</em>{" "}
+          <em className="text-lg font-semibold lg:text-3xl ">
+            Let{" "}
+            <em className="text-sky-400 underline decoration-wavy">share</em>{" "}
+            and{" "}
+            <em className="text-sky-400 underline decoration-wavy">learn</em>{" "}
             together.
           </em>
         </div>
@@ -43,18 +49,12 @@ export default function Index() {
           />
         </div>
       </section>
-      <section className="mx-auto mb-5 flex flex-col md:w-4/5 lg:max-w-2xl 2xl:max-w-3xl px-6">
-        {postArticles.map((post, index) => (
-          <div className="my-5" key={post.id}>
-            <PostArticle
-              {...post}
-              createdAt={new Date(post.createdAt)}
-              updatedAt={new Date(post.updatedAt)}
-            />
-            {index < postArticles.length - 1 && <hr className="line-wavy" />}
-          </div>
-        ))}
+      <section className="mx-auto mb-5 flex flex-col px-6 md:w-4/5 lg:max-w-2xl 2xl:max-w-3xl min-h-[calc(_100vh_*_0.5)]">
+        <Suspense fallback={<CardSkeleton />}>
+          <ListPostArticles postArticles={use(postArticlesAsync)} />
+        </Suspense>
       </section>
     </>
   );
 }
+

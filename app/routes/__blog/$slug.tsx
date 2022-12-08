@@ -1,25 +1,26 @@
-import { json } from "@remix-run/node";
+import { Suspense, use } from "react";
+import { defer } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getPostBySlug, getPublishPosts } from "~/models/note.server";
 import type { Post } from "~/models/note.server";
-import { PostArticleContent, links as PostArticleContentLinks } from "~/components/PostArticleContent";
-import { PostArticle } from "~/components";
+import {
+  PostArticleContent,
+  links as PostArticleContentLinks,
+} from "~/components/PostArticleContent";
+import { CardSkeleton,  } from "~/components";
 
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import ListPostArticles from "~/components/ListPostArticle";
 
 export const links: LinksFunction = () => {
-  return [
-    ...PostArticleContentLinks()
-  ];
+  return [...PostArticleContentLinks()];
 };
 
 type LoaderData = { post: Post };
 
-export const meta: MetaFunction = ({
-  data,
-}: {data: LoaderData}) => {
+export const meta: MetaFunction = ({ data }: { data: LoaderData }) => {
   if (!data) {
     return {
       title: "No blog",
@@ -36,29 +37,30 @@ export const loader = async ({ params }: LoaderArgs) => {
   invariant(params.slug, "Post not found");
 
   const post = (await getPostBySlug(params.slug)) as Post;
-  const listPostsRelative = await getPublishPosts({
+  const listPostsRelativeAsync = getPublishPosts({
     NOT: { slug: params.slug },
-  });
+  }) as Promise<Post[]>;
 
   if (!post) {
-    return json({
+    return defer({
       error: "Post not found",
       status: 404,
       post: null,
-      listPostsRelative,
+      listPostsRelativeAsync,
     });
   }
 
-  return json({
+  return defer({
     error: "",
     status: 200,
     post: post as Post,
-    listPostsRelative,
+    listPostsRelativeAsync: listPostsRelativeAsync as Promise<Post[]>,
   });
 };
 
 export default function PostArticleContentDetail() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData();
+console.log('data.postArticlesAsync', data.postArticlesAsync);
 
   return (
     <>
@@ -78,19 +80,10 @@ export default function PostArticleContentDetail() {
         <h4 className="my-8 text-4xl font-semibold uppercase dark:text-gray-200">
           Relative posts
         </h4>
-        <section className="mx-auto mb-5 flex w-full flex-col px-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">
-          {data.listPostsRelative.map((post, index) => (
-            <div className="my-5" key={post.id}>
-              <PostArticle
-                {...post}
-                createdAt={new Date(post.createdAt)}
-                updatedAt={new Date(post.updatedAt)}
-              />
-              {index < data.listPostsRelative.length - 1 && (
-                <hr className="line-wavy" />
-              )}
-            </div>
-          ))}
+        <section className="mx-auto mb-5 flex min-h-[calc(_100vh_*_0.5)] w-full flex-col px-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">
+          <Suspense fallback={<CardSkeleton />}>
+            <ListPostArticles postArticles={use(data.listPostsRelativeAsync)} />
+          </Suspense>
         </section>
       </div>
     </>

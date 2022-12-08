@@ -114,7 +114,6 @@ const Dashboard = () => {
                   className=""
                 >
                   <path
-                    // fill={isActive ? "rgb(14 165 233)" : "#fff"}
                     className={`fill-slate-600 dark:fill-white ${
                       isActive ? "fill-sky-500" : ""
                     }`}

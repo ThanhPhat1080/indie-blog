@@ -52,7 +52,7 @@ export function getPostListItems({
   });
 }
 
-export function getPublishPosts(option?: object) {
+export async function getPublishPosts(option?: object) {
   return prisma.post.findMany({
     where: { isPublish: true, ...option },
     orderBy: { updatedAt: "desc" },
