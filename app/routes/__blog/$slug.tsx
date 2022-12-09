@@ -4,31 +4,39 @@ import invariant from "tiny-invariant";
 
 import { getPostBySlug, getPublishPosts } from "~/models/note.server";
 import type { Post } from "~/models/note.server";
-import { PostArticleContent, links as PostArticleContentLinks } from "~/components/PostArticleContent";
+import {
+  PostArticleContent,
+  links as PostArticleContentLinks,
+} from "~/components/PostArticleContent";
 import { PostArticle } from "~/components";
 
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 
 export const links: LinksFunction = () => {
-  return [
-    ...PostArticleContentLinks()
-  ];
+  return [...PostArticleContentLinks()];
 };
 
 type LoaderData = { post: Post };
 
-export const meta: MetaFunction = ({
-  data,
-}: {data: LoaderData}) => {
+export const meta: MetaFunction = ({ data, location }: { data: LoaderData, location: any }) => {
   if (!data) {
     return {
       title: "No blog",
       description: "No blog found",
     };
   }
+  
+  const title = data.post?.title || "Blog";
+  const description = data.post?.preface || "";
+  
   return {
-    title: data.post?.title || "Blog",
-    description: data.post?.preface || "",
+    title: title || "Blog",
+    description: description || title || "",
+    "twitter:title": title,
+    "twitter:description": description,
+    "og:url": location,
+    "og:title": title,
+    "og:description": description,
   };
 };
 
