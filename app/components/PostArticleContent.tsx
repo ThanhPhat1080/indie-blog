@@ -68,7 +68,7 @@ export const PostArticleContent = (
         <TextWithMarkdown
           //@ts-ignore
           text={body}
-          style={{ background: "inherit", fontSize: "1.8em" }}
+          style={{ background: "inherit", fontSize: "1.5em" }}
         />
       </div>
     </article>

@@ -1,4 +1,9 @@
-import type { ActionArgs, LinksFunction, LoaderArgs , MetaFunction} from "@remix-run/node";
+import type {
+  ActionArgs,
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -22,9 +27,7 @@ export const links: LinksFunction = () => {
 
 type LoaderData = { post: Post };
 
-export const meta: MetaFunction = ({
-  data,
-}: {data: LoaderData}) => {
+export const meta: MetaFunction = ({ data }: { data: LoaderData }) => {
   if (!data) {
     return {
       title: "No post",
@@ -72,7 +75,8 @@ export default function NoteDetailsPage() {
 
   return (
     <div className="relative">
-      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-end gap-4 p-2 py-1 text-slate-200 bg-slate-600">
+      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-between gap-4 bg-slate-600 p-2 py-1 text-slate-200">
+        <Link to={`/${post.slug}`} className="text-sky-500 hover:underline text-lg" prefetch="intent">Go to post</Link>
         <div className="flex items-center gap-4">
           <Link
             prefetch="intent"

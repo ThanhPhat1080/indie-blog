@@ -1,23 +1,10 @@
 import marked from "marked";
-import sanitizeHtml from "sanitize-html";
 
 import markDownBody from "../styles/mark-down-body.css";
 import lineWavy from "../styles/line-wavy.css";
-import type { LinksFunction } from "@remix-run/node";
+import atomOneDark from '../styles/atom-one-dark.min.css';
 
-const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-  "img",
-  "h1",
-  "h2",
-  "h3",
-]);
-const allowedAttributes = Object.assign(
-  {},
-  sanitizeHtml.defaults.allowedAttributes,
-  {
-    img: ["alt", "src"],
-  }
-);
+import type { LinksFunction } from "@remix-run/node";
 
 export const links: LinksFunction = () => {
   return [
@@ -43,8 +30,23 @@ export const links: LinksFunction = () => {
       rel: "stylesheet",
       href: lineWavy,
     },
+    {
+      rel: "stylesheet",
+      href: atomOneDark
+    }
   ];
 };
+
+// @ts-ignore
+marked.setOptions({
+  highlight: function (code: any, lang: any) {
+    const hljs = require("highlight.js/lib/common");
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+
+    return hljs.highlight(code, { language }).value;
+  },
+  langPrefix: "hljs language-",
+});
 
 export default function TextWithMarkdown({
   text = "",
@@ -60,11 +62,8 @@ export default function TextWithMarkdown({
       className={`markdown-body ${customClasses}`}
       style={style}
       dangerouslySetInnerHTML={{
-        //@ts-ignore
-        __html: sanitizeHtml(marked(text), {
-          allowedTags,
-          allowedAttributes,
-        }),
+        // @ts-ignore
+        __html: marked.parse(text),
       }}
     />
   );

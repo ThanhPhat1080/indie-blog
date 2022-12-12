@@ -2,6 +2,11 @@
     background-color: transparent;
 }
 
+.markdown-body pre {
+    font-size: 1.2rem;
+    position: relative;
+}
+
 .markdown-body img {
     border-radius: 10px;
 }
