@@ -1,0 +1,13 @@
+@keyframes background-animation {
+    0% { background-size: 100vw 100vh; }
+    50% { background-size: 150vw 150vh; }
+    100% { background-size: 200vw 200vh; }
+}
+
+.wave-background-animation {
+    background-image: url("/assets/images/wave.svg");
+    background-size: 100vw 100vh;
+    animation: background-animation 30s infinite alternate linear;
+    background-color: #214c7c;
+    background-repeat: no-repeat;
+}

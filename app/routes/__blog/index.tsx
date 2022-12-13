@@ -46,7 +46,7 @@ export default function Index() {
             />
           </div>
         </section>
-        <div>
+        <div className="relative bg-wave">
           <div className="absolute left-0 bottom-[600px] w-full before:absolute before:bottom-[-550px] before:h-[600px] before:w-full before:dark:bg-slate-500 before:bg-cyan-200">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
               <path

@@ -1,6 +1,8 @@
 import * as React from "react";
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
+
 import {
   Form,
   Link,
@@ -14,7 +16,7 @@ import { verifyLogin } from "~/models/user.server";
 import { isEmptyOrNotExist, safeRedirect, validateEmail } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
-import { AuthFormLayout } from "~/components";
+import { AuthFormLayout, AuthFormLayoutLink } from "~/components";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
@@ -80,6 +82,10 @@ export const meta: MetaFunction = () => {
   };
 };
 
+export const links: LinksFunction = () => {
+  return [...AuthFormLayoutLink()];
+};
+
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
   const transition = useTransition();
@@ -126,7 +132,7 @@ export default function LoginPage() {
               autoComplete="email"
               aria-invalid={isEmailError ? true : undefined}
               aria-describedby="email-error"
-              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
+              className="w-full rounded border bg-white px-2 py-1 text-slate-600 dark:border-gray-200 dark:bg-slate-800 dark:text-white"
               defaultValue="admin@admin.com"
             />
             {isEmailError && (
@@ -150,7 +156,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               aria-invalid={isPasswordError ? true : undefined}
               aria-describedby="password-error"
-              className="w-full rounded border px-2 py-1 dark:border-gray-200 bg-white text-slate-600 dark:text-white dark:bg-slate-800"
+              className="w-full rounded border bg-white px-2 py-1 text-slate-600 dark:border-gray-200 dark:bg-slate-800 dark:text-white"
               defaultValue="adminadmin"
             />
             {isPasswordError && (
@@ -166,12 +172,15 @@ export default function LoginPage() {
           type="submit"
           disabled={isFormSubmission}
           aria-disabled={isFormSubmission}
-          className="w-full items-center inline-flex justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
+          className="inline-flex w-full items-center justify-center rounded bg-sky-700 py-2 px-4 font-bold text-white hover:bg-sky-600 focus:bg-sky-400"
         >
           {isFormSubmission ? "Logging in" : "Log in"}
         </button>
         <div className="flex items-center justify-between">
-          <label htmlFor="remember" className="flex items-center cursor-pointer">
+          <label
+            htmlFor="remember"
+            className="flex cursor-pointer items-center"
+          >
             <input
               id="remember"
               name="remember"
@@ -186,7 +195,7 @@ export default function LoginPage() {
             Don't have an account?{" "}
             <Link
               title="Register"
-              className="dark:text-sky-500 font-bold text-sky-800 hover:underline"
+              className="font-bold text-sky-800 hover:underline dark:text-sky-500"
               to={{
                 pathname: ROUTERS.REGISTER,
                 search: searchParams.toString(),

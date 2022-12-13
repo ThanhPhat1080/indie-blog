@@ -4,7 +4,7 @@ import PostCard from "./PostCard";
 import CloudinaryImageLoader from "./CloudinaryImageLoader";
 import PostArticle from "./PostArticle";
 import { ClientOnly } from "./ClientOnly";
-import { AuthFormLayout } from "./layouts/AuthFormLayout";
+import { AuthFormLayout , links as AuthFormLayoutLink } from "./layouts/AuthFormLayout";
 
 export {
   CloudinaryImageLoader,
@@ -15,4 +15,5 @@ export {
   PostArticle,
   ClientOnly,
   AuthFormLayout,
+  AuthFormLayoutLink
 };

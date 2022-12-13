@@ -2,6 +2,8 @@ import { useRef, useEffect } from "react";
 
 import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
+
 import {
   Form,
   Link,
@@ -20,7 +22,11 @@ import {
   validateEmail,
   validateUserName,
 } from "~/utils";
-import { AuthFormLayout } from "~/components";
+import { AuthFormLayout, AuthFormLayoutLink } from "~/components";
+
+export const links: LinksFunction = () => {
+  return [...AuthFormLayoutLink()]
+}
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
