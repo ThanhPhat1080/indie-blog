@@ -22,8 +22,8 @@ export const PostArticleContent = (
   } = props;
   return (
     <article aria-details={title} aria-label={title} className="w-full">
-      <div className="mb-8">
-        <h1 className="text-8xl font-bold dark:text-gray-200">{title}</h1>
+      <div className="my-8">
+        <h1 className="2xl:text-8xl lg:text-6xl text-4xl font-bold dark:text-gray-200">{title}</h1>
         <div className="my-8" />
         <span className="flex items-center gap-x-4 font-semibold">
           <span className="flex flex-col dark:text-gray-200">
