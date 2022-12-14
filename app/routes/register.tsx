@@ -287,7 +287,7 @@ export default function Register() {
             Already have an account?{" "}
             <Link
               title="login"
-              className="dark:text-sky-500 text-sky-800 hover:underline font-bold "
+              className="text-sky-400 hover:underline font-bold "
               to={{
                 pathname: "/login",
                 search: searchParams.toString(),

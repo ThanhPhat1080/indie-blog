@@ -10,6 +10,8 @@ import { requireUserId } from "~/session.server";
 import remixImageStyles from "remix-image/remix-image.css";
 import ROUTERS from "~/constants/routers";
 
+export const handle = { hydrate: true };
+
 export const links = () => [{ rel: "stylesheet", href: remixImageStyles }];
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -26,6 +28,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return json({ user: user!, error: null, status: 200 });
 };
+
 
 const Dashboard = () => {
   const data = useLoaderData<typeof loader>();

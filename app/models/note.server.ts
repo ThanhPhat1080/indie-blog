@@ -25,6 +25,7 @@ export function getPostBySlug(slug: string, userId?: string) {
 
   return prisma.post.findFirst({
     where: query,
+    include: { user: true },
   });
 }
 
@@ -55,6 +56,7 @@ export function getPostListItems({
 export function getPublishPosts(option?: object) {
   return prisma.post.findMany({
     where: { isPublish: true, ...option },
+    include: { user: true },
     orderBy: { updatedAt: "desc" },
   });
 }

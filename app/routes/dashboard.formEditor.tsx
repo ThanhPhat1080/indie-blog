@@ -36,6 +36,8 @@ import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 import ROUTERS from "~/constants/routers";
 import { uploadImageHandler } from "~/cloudinaryUtils.server";
 
+export const handle = { hydrate: true };
+
 export const links: LinksFunction = () => {
   return [...SwitchButtonLink(), ...TextWithMarkdownLinks()];
 };

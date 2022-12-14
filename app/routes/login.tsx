@@ -195,7 +195,7 @@ export default function LoginPage() {
             Don't have an account?{" "}
             <Link
               title="Register"
-              className="font-bold text-sky-800 hover:underline dark:text-sky-500"
+              className="font-bold text-sky-400 hover:underline"
               to={{
                 pathname: ROUTERS.REGISTER,
                 search: searchParams.toString(),

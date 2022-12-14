@@ -55,7 +55,7 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return json({ post, author });
+  return json({ post });
 }
 
 export async function action({ request, params }: ActionArgs) {
@@ -68,9 +68,8 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function NoteDetailsPage() {
-  const { post, author } = useLoaderData<typeof loader>() as {
+  const { post } = useLoaderData<typeof loader>() as {
     post: Post;
-    author: User;
   };
 
   return (
@@ -98,6 +97,7 @@ export default function NoteDetailsPage() {
       <div className="mx-auto my-12 flex min-h-screen max-w-6xl flex-col px-3">
         <PostArticleContent
           {...post}
+          author={post.user}
           createdAt={new Date(post.createdAt)}
           updatedAt={new Date(post.updatedAt)}
         />

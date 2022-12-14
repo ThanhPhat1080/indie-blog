@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useMatches,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -28,6 +29,14 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export default function App() {
+
+  const matches = useMatches();
+
+  // If at least one route wants to hydrate, this will return true
+  const includeScripts = matches.some(
+    (match) => match.handle?.hydrate
+  );
+
   return (
     <html lang="en">
       <head>
@@ -38,7 +47,9 @@ export default function App() {
       <body className="h-full bg-white dark:bg-slate-800">
         <Outlet />
         <ScrollRestoration />
-        <Scripts />
+
+         {/* include the scripts, or not! */}
+         {includeScripts ? <Scripts /> : null}
       </body>
     </html>
   );

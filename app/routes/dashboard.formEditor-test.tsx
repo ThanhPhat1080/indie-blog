@@ -31,6 +31,8 @@ import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 
+export const handle = { hydrate: true };
+
 export const links: LinksFunction = () => {
   return [...SwitchButtonLink(), ...TextWithMarkdownLinks()];
 };
