@@ -37,7 +37,7 @@ export const meta: MetaFunction = ({
   const author = data.post?.user?.name || "";
   const avatar = data.post?.user?.avatar || '';
 
-   const OGImage = encodeURIComponent(`https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${title}&author=${author}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`);
+   const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
 
   return {
     title: title || "Blog",
