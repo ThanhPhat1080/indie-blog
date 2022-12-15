@@ -34,6 +34,10 @@ export const meta: MetaFunction = ({
 
   const title = data.post?.title || "Blog";
   const description = data.post?.preface || "";
+  const author = data.post?.user?.name || "";
+  const avatar = data.post?.user?.avatar || '';
+
+   const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${title}&author=${author}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
 
   return {
     title: title || "Blog",
@@ -43,6 +47,8 @@ export const meta: MetaFunction = ({
     "og:url": location,
     "og:title": title,
     "og:description": description,
+    "og:image": OGImage,
+    "twitter:image": OGImage
   };
 };
 
