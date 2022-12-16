@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getPostBySlug, getPublishPosts } from "~/models/note.server";
-import type { Post } from "~/models/note.server";
+import type { Post } from "prisma/prisma-client";
 import {
   PostArticleContent,
   links as PostArticleContentLinks,
@@ -16,39 +16,43 @@ export const links: LinksFunction = () => {
   return [...PostArticleContentLinks()];
 };
 
-type LoaderData = { post: Post };
-
-export const meta: MetaFunction = ({
-  data,
-  location,
-}: {
-  data: LoaderData;
-  location: any;
-}) => {
+export const meta: MetaFunction = ({ data, location, parentsData }) => {
   if (!data) {
     return {
-      title: "No blog",
-      description: "No blog found",
+      title: "Personal technical blog - Not found",
+      description: "Personal technical blog - Not found",
     };
   }
 
-  const title = data.post?.title || "Blog";
+  const title = data.post?.title || "Personal technical blog";
   const description = data.post?.preface || "";
   const author = data.post?.user?.name || "";
-  const avatar = data.post?.user?.avatar || '';
+  const avatar = data.post?.user?.avatar || "";
 
-   const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
+  const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${encodeURIComponent(
+    title
+  )}&author=${encodeURIComponent(
+    author
+  )}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
 
   return {
-    title: title || "Blog",
+    title,
     description: description || title || "",
+    keywords: "technical blog,Remix indie," + title,
+
     "twitter:title": title,
     "twitter:description": description,
+    "twitter:image": OGImage,
+
     "og:url": location,
     "og:title": title,
     "og:description": description,
     "og:image": OGImage,
-    "twitter:image": OGImage
+    "og:image:url": OGImage,
+    "og:image:type": "png/jpg/jpeg",
+    "og:image:alt": title,
+    "og:image:width": "1200",
+    "og:image:height": "630",
   };
 };
 
@@ -97,7 +101,7 @@ export default function PostArticleContentDetail() {
       </div>
 
       <div className="relative pt-40">
-        <div className="xlg:w-1/2 mx-auto mb-5 flex w-full flex-col px-5 lg:w-3/4 lg:px-0">
+        <div className="mx-auto mb-5 flex w-full flex-col px-5 lg:px-0 md:max-w-3xl lg:max-w-5xl 2xlg:max-w-7xl">
           {data.post ? (
             <section className="pb-8">
               <PostArticleContent

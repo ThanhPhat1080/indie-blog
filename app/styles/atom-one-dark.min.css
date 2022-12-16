@@ -147,8 +147,8 @@ code.hljs {
     border-radius: 15px;
     display: inline-flex;
     padding: 8px 15px 4px;
-    color: #3c4450;
-    background: #1c2028;
+    color: var(--code-label-color);
+    background: var(--code-label-background);
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     text-align: center;
