@@ -130,7 +130,7 @@ export default function PostArticleContentDetail() {
           </div>
 
           <div className="xlg:w-1/2 mx-auto mb-40 flex w-full flex-col px-5 lg:w-3/4 lg:px-0">
-            <h4 className="my-16 pt-20 text-center text-4xl font-semibold uppercase dark:text-gray-200 ">
+            <h4 className="relative z-10 my-16 pt-20 text-center text-4xl font-semibold uppercase dark:text-gray-200 ">
               Relative posts
             </h4>
             <section className="relative mx-auto flex w-full flex-col px-5 pb-5 md:w-4/5 md:px-0 lg:max-w-2xl 2xl:max-w-3xl">

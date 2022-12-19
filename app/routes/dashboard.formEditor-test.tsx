@@ -25,7 +25,12 @@ import {
 } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 
-import { SwitchButton, SwitchButtonLink, TextWithMarkdown } from "~/components";
+import {
+  SwitchButton,
+  SwitchButtonLink,
+  TextareaEditorSimple,
+  TextWithMarkdown,
+} from "~/components";
 import { links as TextWithMarkdownLinks } from "~/components/TextWithMarkdown";
 import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
 
@@ -228,6 +233,13 @@ export default function PostEditorForm() {
     }
   });
 
+  const onBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNotePreview((prev) => ({
+      ...prev,
+      body: e.target.value,
+    }));
+  };
+
   return (
     <>
       <div className="flex h-screen bg-amber-50 text-slate-700 dark:bg-slate-600 dark:text-slate-200">
@@ -334,7 +346,7 @@ export default function PostEditorForm() {
                 name="id"
                 className="hidden"
                 readOnly
-                value={post?.id ?? null}
+                value={post?.id ?? ""}
               />
 
               {/* ---Preface--- */}
@@ -378,21 +390,13 @@ export default function PostEditorForm() {
                     Markdown syntax
                   </a>
                 </span>
-                <textarea
-                  ref={bodyRef}
+                <TextareaEditorSimple
+                  innerRef={bodyRef}
                   name="body"
-                  rows={15}
-                  className="w-full flex-1 rounded-md border-2 border-gray-100 bg-orange-50 py-2 px-3 text-sm leading-6 text-slate-700 focus:bg-white dark:bg-slate-800 dark:text-slate-300 focus:dark:bg-slate-800"
-                  aria-invalid={isBodyError ? true : undefined}
-                  aria-errormessage={isBodyError ? "body-error" : undefined}
-                  onChange={(e) =>
-                    setNotePreview((prev) => ({
-                      ...prev,
-                      body: e.target.value,
-                    }))
-                  }
-                  required
-                  defaultValue={postBody}
+                  isRequired
+                  isError={isBodyError}
+                  onChange={onBodyChange}
+                  defaultValue={postBody || ""}
                 />
                 {isBodyError && (
                   <div className="pt-1 text-red-700" id="body-error">

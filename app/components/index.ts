@@ -5,6 +5,7 @@ import CloudinaryImageLoader from "./CloudinaryImageLoader";
 import PostArticle from "./PostArticle";
 import { ClientOnly } from "./ClientOnly";
 import { AuthFormLayout , links as AuthFormLayoutLink } from "./layouts/AuthFormLayout";
+import TextareaEditorSimple from "./TextareaEditorSimple";
 
 export {
   CloudinaryImageLoader,
@@ -15,5 +16,6 @@ export {
   PostArticle,
   ClientOnly,
   AuthFormLayout,
-  AuthFormLayoutLink
+  AuthFormLayoutLink,
+  TextareaEditorSimple
 };

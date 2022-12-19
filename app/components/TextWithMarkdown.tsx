@@ -59,7 +59,7 @@ export default function TextWithMarkdown({
 }) {
   return (
     <div
-      className={`markdown-body ${customClasses}`}
+      className={`markdown-body w-full ${customClasses}`}
       style={style}
       dangerouslySetInnerHTML={{
         // @ts-ignore
