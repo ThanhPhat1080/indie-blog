@@ -53,11 +53,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const author = await getUserById(userId);
   const post = await getPostBySlug(params.slug, userId);
 
-  if (isEmptyOrNotExist(post)) {
-    throw new Response("Not Found", { status: 404 });
-  }
-
-  if (isEmptyOrNotExist(author)) {
+  if (isEmptyOrNotExist(post) || isEmptyOrNotExist(author)) {
     throw new Response("Not Found", { status: 404 });
   }
 
