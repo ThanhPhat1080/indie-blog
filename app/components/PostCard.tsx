@@ -7,7 +7,7 @@ import CloudinaryImageLoader from "./CloudinaryImageLoader";
 export const PostCard = (props: Partial<Post>) => {
   const { title, preface, isPublish, slug = "", coverImage, updatedAt } = props;
   return (
-    <div className="relative rounded-xl border border-gray-200 shadow-md dark:border-gray-700 dark:bg-slate-800">
+    <div className="relative rounded-xl border border-gray-200 shadow-lg shadow-gray-400 dark:border-gray-700 dark:bg-slate-800">
       <Link to={slug} title={slug} prefetch="intent">
         <div className="h-48 overflow-hidden rounded-lg">
           <CloudinaryImageLoader

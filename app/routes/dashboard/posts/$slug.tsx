@@ -5,7 +5,13 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useCatch,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import type { Post } from "~/models/note.server";
@@ -13,13 +19,13 @@ import { deletePostBySlug, getPostBySlug } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 import { isEmptyOrNotExist } from "~/utils";
 
-import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import ROUTERS from "~/constants/routers";
 import {
   PostArticleContent,
   links as PostArticleContentLinks,
 } from "~/components/PostArticleContent";
+import { PostLoadingSkeleton } from "~/components";
 
 export const links: LinksFunction = () => {
   return [...PostArticleContentLinks()];
@@ -71,36 +77,64 @@ export default function NoteDetailsPage() {
   const { post } = useLoaderData<typeof loader>() as {
     post: Post;
   };
+  const transition = useTransition();
+  const isLoading = transition.state === "loading";
 
   return (
     <div className="relative">
-      <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-between gap-4 bg-slate-600 p-2 py-1 text-slate-200">
-        <Link to={`/${post.slug}`} className="text-sky-500 hover:underline text-lg" prefetch="intent">Go to post</Link>
-        <div className="flex items-center gap-4">
-          <Link
-            prefetch="intent"
-            title="Edit"
-            to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}
-          >
-            Edit
-          </Link>
-          <Form method="delete">
-            <button
-              type="submit"
-              className="text-md rounded-lg bg-red-500 px-2 py-1 text-white"
+      {!isLoading && (
+        <div className="w-100 text-md sticky top-0 z-20 flex h-10 items-center justify-between gap-4 bg-slate-600 p-2 py-1 text-slate-200">
+          {post.isPublish ? (
+            <div>
+              <strong className="mr-2 rounded-xl border-2 border-green-500 px-3 text-green-500">
+                Published
+              </strong>
+              <Link
+                to={`/${post.slug}`}
+                className="text-lg text-sky-500 hover:underline"
+                prefetch="intent"
+              >
+                <strong>Go to post</strong>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <div className=" rounded-xl border-2 border-gray-500 px-3 dark:text-gray-500">
+                Draft
+              </div>
+            </>
+          )}
+
+          <div className="flex items-center gap-4">
+            <Link
+              prefetch="intent"
+              title="Edit"
+              to={`${ROUTERS.DASHBOARD}/formEditor-test?id=${post.id}`}
             >
-              <strong>Delete</strong>
-            </button>
-          </Form>
+              Edit
+            </Link>
+            <Form method="delete">
+              <button
+                type="submit"
+                className="text-md rounded-lg bg-red-500 px-2 py-1 text-white"
+              >
+                <strong>Delete</strong>
+              </button>
+            </Form>
+          </div>
         </div>
-      </div>
+      )}
       <div className="mx-auto my-12 flex min-h-screen max-w-6xl flex-col px-3">
-        <PostArticleContent
-          {...post}
-          author={post.user}
-          createdAt={new Date(post.createdAt)}
-          updatedAt={new Date(post.updatedAt)}
-        />
+        {transition.state === "loading" ? (
+          <PostLoadingSkeleton />
+        ) : (
+          <PostArticleContent
+            {...post}
+            author={post.user}
+            createdAt={new Date(post.createdAt)}
+            updatedAt={new Date(post.updatedAt)}
+          />
+        )}
       </div>
     </div>
   );

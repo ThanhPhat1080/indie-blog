@@ -7,6 +7,8 @@ import {
   Outlet,
   PrefetchPageLinks,
   useLoaderData,
+  useResolvedPath,
+  useTransition,
 } from "@remix-run/react";
 
 import { requireUserId } from "~/session.server";
@@ -25,10 +27,46 @@ export async function loader({ request }: LoaderArgs) {
   return json({ postListItems, query });
 }
 
+function PostPendingLink({ to, children } : {to:string, children: React.ReactNode}) {
+  const transition = useTransition();
+  const path = useResolvedPath(to);
+
+  const isPending =
+    transition.state === "loading" &&
+    transition.location.pathname === path.pathname;
+
+  return (
+    <>
+      <NavLink to={to} data-pending={isPending ? "true" : null}>
+        {({ isActive }) =>
+          isActive || isPending ? (
+            <>
+              <div className="absolute z-10 h-full w-full rounded-lg border-2 border-orange-500 shadow-lg shadow-orange-200"></div>
+              {!isPending && (
+                <>
+                  <span className="absolute left-[-6px] top-[-8px] z-20 flex h-5 w-5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+                    <span className="relative inline-flex h-5 w-5 rounded-full bg-orange-500"></span>
+                  </span>
+                  <span className="absolute right-[-6px] bottom-[-8px] z-20 flex h-5 w-5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
+                    <span className="relative inline-flex h-5 w-5 rounded-full bg-orange-500"></span>
+                  </span>
+                </>
+              )}
+            </>
+          ) : null
+        }
+      </NavLink>
+      {children}
+    </>
+  );
+}
+
 export default function PostPage() {
   const { postListItems, query } = useLoaderData<typeof loader>();
   const [prefetchSearchQuery, setPrefetchSearchQuery] = useState<string>(
-    query || ''
+    query || ""
   );
 
   return (
@@ -91,29 +129,28 @@ export default function PostPage() {
             <PrefetchPageLinks page={`/?q=${prefetchSearchQuery}`} />
           )}
           {!postListItems.length && <p className="mt-10 text-center">Empty.</p>}
-          {(!postListItems.length && prefetchSearchQuery) && <span>Try to type another keyword or you can <Link to='.?q=' className="text-center text-sky-500">clear it now.</Link></span>}
+          {!postListItems.length && prefetchSearchQuery && (
+            <span>
+              Try to type another keyword or you can{" "}
+              <Link to=".?q=" className="text-center text-sky-500">
+                clear it now.
+              </Link>
+            </span>
+          )}
           {postListItems.map((post) => (
             <div key={post.id} className="relative my-2">
-              <NavLink to={post.slug}>
-                {({ isActive }) =>
-                  isActive ? (
-                    <span className="absolute left-[-6px] top-[-8px] z-20 flex h-5 w-5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
-                      <span className="relative inline-flex h-5 w-5 rounded-full bg-orange-500"></span>
-                    </span>
-                  ) : null
-                }
-              </NavLink>
-              <PostCard
-                {...post}
-                createdAt={new Date(post.createdAt)}
-                updatedAt={new Date(post.updatedAt)}
-              />
+              <PostPendingLink to={post.slug}>
+                <PostCard
+                  {...post}
+                  createdAt={new Date(post.createdAt)}
+                  updatedAt={new Date(post.updatedAt)}
+                />
+              </PostPendingLink>
             </div>
           ))}
         </nav>
         <div
-          className="fixed bottom-0 left-0 w-full border-r-2 border-t-2 border-slate-600 p-6 dark:bg-slate-800"
+          className="fixed bottom-0 left-0 z-20 w-full border-r-2 border-t-2 border-slate-600 bg-amber-50 p-6 dark:bg-slate-800"
           style={{ width: "inherit" }}
         >
           <Link

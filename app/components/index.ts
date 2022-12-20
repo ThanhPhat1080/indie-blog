@@ -6,8 +6,10 @@ import PostArticle from "./PostArticle";
 import { ClientOnly } from "./ClientOnly";
 import { AuthFormLayout , links as AuthFormLayoutLink } from "./layouts/AuthFormLayout";
 import TextareaEditorSimple from "./TextareaEditorSimple";
+import PostLoadingSkeleton from "./PostLoadingSkeleton";
 
 export {
+  PostLoadingSkeleton,
   CloudinaryImageLoader,
   TextWithMarkdown,
   SwitchButton,
