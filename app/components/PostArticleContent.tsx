@@ -67,9 +67,9 @@ export const PostArticleContent = (
           responsive={[
             {
               size: {
-                width: 500,
+                width: 1000,
               },
-              maxWidth: 1000,
+              maxWidth: 1024,
             },
           ]}
           width="675"
