@@ -13,7 +13,8 @@ type PropTypes = {
 
 const themeTextarea = {
   light: { background: "white", color: "black" },
-  dark: { background: "#1f2a3a", color: "white" },
+  dark: { background: "#1f2a3a", color: "#e5e7eb" },
+  system: {}
 };
 
 export const TextareaEditorSimple = ({
@@ -35,8 +36,8 @@ export const TextareaEditorSimple = ({
     fontSize: string;
     theme: keyof typeof themeTextarea;
   }>({
-    fontSize: "2",
-    theme: "light",
+    fontSize: "1",
+    theme: "system",
   });
   const baseClasses =
     "w-full flex-1 rounded-md border-2 border-gray-100 bg-white py-2 px-3 leading-6 text-slate-700 font-semibold focus:bg-white dark:bg-slate-800 dark:text-slate-300 focus:dark:bg-slate-800";
@@ -82,6 +83,7 @@ export const TextareaEditorSimple = ({
             className="bg-black text-white"
             value={customStyles.theme}
           >
+            <option value="system">System</option>
             <option value="dark">Dark</option>
             <option value="light">Light</option>
           </select>

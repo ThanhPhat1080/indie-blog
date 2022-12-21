@@ -63,11 +63,11 @@ export const PostArticleContent = (
         <CloudinaryImageLoader
           alt={title || ""}
           src={coverImage || ""}
-          options={{ fit: "fill" }}
+          options={{ fit: "cover" }}
           responsive={[
             {
               size: {
-                width: 1000,
+                width: 675,
               },
               maxWidth: 1024,
             },
@@ -82,7 +82,6 @@ export const PostArticleContent = (
 
       <div className="py-6">
         <TextWithMarkdown
-          //@ts-ignore
           text={body}
           style={{ background: "inherit", fontSize: "1.5em" }}
         />

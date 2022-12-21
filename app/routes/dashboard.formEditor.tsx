@@ -398,7 +398,8 @@ export default function PostEditorForm() {
               {/* ---Preface--- */}
               <label className="text-stale flex w-full flex-col gap-1 text-sm">
                 Preface
-                <input
+                <textarea
+                  rows={3}
                   name="preface"
                   className="w-full rounded border bg-white px-2 py-1 text-slate-600 dark:border-gray-200 dark:bg-slate-800 dark:text-white"
                   aria-invalid={isPrefaceError ? true : undefined}

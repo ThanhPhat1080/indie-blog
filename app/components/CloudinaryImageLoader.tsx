@@ -147,6 +147,7 @@ export const CloudinaryImageLoader = ({
       width={width}
       height={height}
       className={className}
+      style={{minHeight: '100%', minWidth: '100%'}}
     />
   );
 };

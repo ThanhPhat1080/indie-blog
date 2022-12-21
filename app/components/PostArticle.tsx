@@ -32,11 +32,11 @@ export const PostArticle = (
           <CloudinaryImageLoader
             alt={"Post cover image:" + title}
             src={coverImage || ""}
-            options={{ fit: "fill" }}
+            options={{ fit: "cover" }}
             responsive={[
               {
                 size: {
-                  width: 1000,
+                  width: 500,
                 },
                 maxWidth: 1024,
               },
