@@ -13,7 +13,7 @@ type PropTypes = {
 
 const themeTextarea = {
   light: { background: "white", color: "black" },
-  dark: { background: "#1f2a3a", color: "#e5e7eb" },
+  dark: { background: "#1f2a3a", color: "#cbd5e1" },
   system: {}
 };
 
@@ -107,9 +107,9 @@ export const TextareaEditorSimple = ({
               }))
             }
             value={customStyles.fontSize}
-            min="0.5"
-            max="3"
-            step="0.5"
+            min="0.8"
+            max="2.2"
+            step="0.2"
             className="pointer"
           />
           <strong>{`${customStyles.fontSize}rem`}</strong>
@@ -128,7 +128,7 @@ export const TextareaEditorSimple = ({
         defaultValue={text.value || ''}
         style={{
           fontSize: `${customStyles.fontSize}rem`,
-          lineHeight: 1,
+          lineHeight: 1.3,
           ...themeTextarea[customStyles.theme],
         }}
       />

@@ -410,7 +410,7 @@ export default function PostEditorForm() {
         </div>
         <div className="flex h-full flex-1 flex-col overflow-scroll border-l-2 border-gray-400">
           <div className="w-100 flex h-8 items-center justify-center bg-slate-700 p-2 text-sm text-slate-200">
-            <h2 className="">Post preview</h2>
+            <h2 className="font-bold">Live Preview</h2>
           </div>
           <div className="relative mt-3 flex flex-1 flex-col px-1">
             <em className="text-stale text-sm">

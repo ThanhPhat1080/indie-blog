@@ -9,6 +9,7 @@
 
 .markdown-body img {
     border-radius: 10px;
+    margin: 4rem auto;
 }
 .markdown-body ul li {
     list-style-type: disc;
