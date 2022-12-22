@@ -31,8 +31,8 @@ export const meta: MetaFunction = ({ data, location, parentsData }) => {
   const avatar = data.post?.user?.avatar || "";
   const titleInOG = capitalizeFirstLetter(convertUrlSlug(title, "+"));
   const authorInOG = convertUrlSlug(author, "+").split("+").map(capitalizeFirstLetter).join("+")
-
   const avatarInOG = `https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
+
   const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${titleInOG}&author=${authorInOG}&avatar=${avatarInOG}`;
 
   return {
