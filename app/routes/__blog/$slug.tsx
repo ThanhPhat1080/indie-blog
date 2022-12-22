@@ -11,7 +11,7 @@ import {
 import { PostArticle } from "~/components";
 
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
-import { convertUrlSlug } from "~/utils";
+import { capitalizeFirstLetter, convertUrlSlug } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [...PostArticleContentLinks()];
@@ -29,14 +29,13 @@ export const meta: MetaFunction = ({ data, location, parentsData }) => {
   const description = data.post?.preface || "";
   const author = data.post?.user?.name || "";
   const avatar = data.post?.user?.avatar || "";
-
-  const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${convertUrlSlug(
+  const titleInOG = convertUrlSlug(
     title,
     "+"
-  )}&author=${convertUrlSlug(
-    author,
-    "+"
-  )}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
+  )
+  const authorInOG = convertUrlSlug(author.split(" ").map(capitalizeFirstLetter).join(" "), "+")
+  const avatarInOG = `https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
+  const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${titleInOG}&author=${authorInOG}&avatar=${avatarInOG}`;
 
   return {
     title,
