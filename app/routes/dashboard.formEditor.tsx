@@ -36,7 +36,7 @@ import {
   TextWithMarkdown,
 } from "~/components";
 import { links as TextWithMarkdownLinks } from "~/components/TextWithMarkdown";
-import { convertUrlSlugFormat, isEmptyOrNotExist } from "~/utils";
+import { convertUrlSlug, convert_Vi_To_Eng, isEmptyOrNotExist } from "~/utils";
 
 import ROUTERS from "~/constants/routers";
 import { uploadImageHandler } from "~/cloudinaryUtils.server";
@@ -161,7 +161,7 @@ export async function action({ request }: ActionArgs) {
       coverImage,
       isPublish,
       userId,
-      slug: convertUrlSlugFormat(title),
+      slug: convertUrlSlug(title, "-", convert_Vi_To_Eng),
     });
 
     return redirect(`${ROUTERS.DASHBOARD}/posts/${newPost.slug}`);
@@ -177,7 +177,7 @@ export async function action({ request }: ActionArgs) {
         body,
         coverImage,
         isPublish,
-        slug: convertUrlSlugFormat(title),
+        slug: convertUrlSlug(title, "-", convert_Vi_To_Eng),
       });
 
       return redirect(`${ROUTERS.DASHBOARD}/posts/${updatedPost.slug}`);
@@ -386,7 +386,11 @@ export default function PostEditorForm() {
                 name="slug"
                 className="hidden"
                 readOnly
-                value={convertUrlSlugFormat(postPreview.title)}
+                value={convertUrlSlug(
+                  postPreview.title,
+                  "-",
+                  convert_Vi_To_Eng
+                )}
               />
               <input
                 name="id"
@@ -488,7 +492,11 @@ export default function PostEditorForm() {
                 className="dark:text-gray w-full rounded-md border-2 border-gray-100 px-3 text-sm italic leading-loose"
                 aria-invalid={isSlugError ? true : undefined}
                 aria-errormessage={isSlugError ? "preface-error" : undefined}
-                value={convertUrlSlugFormat(postPreview.title)}
+                value={convertUrlSlug(
+                  postPreview.title,
+                  "-",
+                  convert_Vi_To_Eng
+                )}
                 disabled
               />
             </label>

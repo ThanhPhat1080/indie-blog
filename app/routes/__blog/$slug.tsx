@@ -11,6 +11,7 @@ import {
 import { PostArticle } from "~/components";
 
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import { convertUrlSlug } from "~/utils";
 
 export const links: LinksFunction = () => {
   return [...PostArticleContentLinks()];
@@ -29,10 +30,12 @@ export const meta: MetaFunction = ({ data, location, parentsData }) => {
   const author = data.post?.user?.name || "";
   const avatar = data.post?.user?.avatar || "";
 
-  const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${encodeURIComponent(
-    title
-  )}&author=${encodeURIComponent(
-    author
+  const OGImage = `https://vercel-og-nextjs-indol-iota.vercel.app/api/param?title=${convertUrlSlug(
+    title,
+    "+"
+  )}&author=${convertUrlSlug(
+    author,
+    "+"
   )}&avatar=https://res.cloudinary.com/diveoh2pp/b_rgb:00000000,c_fill,w_50,g_center,q_80,f_auto/${avatar}`;
 
   return {
@@ -101,7 +104,7 @@ export default function PostArticleContentDetail() {
       </div>
 
       <div className="relative pt-40">
-        <div className="mx-auto mb-5 flex w-full flex-col px-5 lg:px-0 md:max-w-3xl lg:max-w-5xl 2xlg:max-w-7xl">
+        <div className="2xlg:max-w-7xl mx-auto mb-5 flex w-full flex-col px-5 md:max-w-3xl lg:max-w-5xl lg:px-0">
           {data.post ? (
             <section className="pb-8">
               <PostArticleContent

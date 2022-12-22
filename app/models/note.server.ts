@@ -2,7 +2,7 @@ import type { User, Post } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 import {
-  convertUrlSlugFormat,
+  convertUrlSlug,
   isEmptyOrNotExist,
   removeEmptyObjectProperties,
 } from "~/utils";
@@ -42,7 +42,7 @@ export function getPostListItems({
         userId,
         AND: {
           slug: {
-            contains: convertUrlSlugFormat(query),
+            contains: convertUrlSlug(query),
           },
         },
       };
