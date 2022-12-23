@@ -29,7 +29,7 @@ export const PostArticleContent = (
         <div className="flex gap-3 text-md">
           <div className="relative h-12 w-12 border-spacing-3 overflow-hidden rounded-full border-2 border-sky-500 dark:border-slate-500">
             <CloudinaryImageLoader
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform"
+              className="absolute-center"
               src={author.avatar || ""}
               height="50"
               width="50"
@@ -59,7 +59,7 @@ export const PostArticleContent = (
         </div>
       </div>
 
-      <div className="mt-4 h-[600px] overflow-hidden rounded-xl shadow-lg">
+      <div className="mt-4 h-64 md:h-80 lg:h-96 overflow-hidden rounded-xl shadow-lg">
         <CloudinaryImageLoader
           alt={title || ""}
           src={coverImage || ""}

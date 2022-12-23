@@ -60,14 +60,14 @@ export default function BlogIndex() {
         <Outlet />
       </main>
 
-      <footer className="bottom-0 mt-[300px] text-center text-lg dark:text-gray-300 relative">
+      <footer className="bottom-0 mt-[180px] text-center text-lg dark:text-gray-300 relative">
         <div className="absolute bottom-0 left-0 w-full items-end justify-center">
           <svg
             data-name="Layer 1"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
-            className="h-[100px] w-full rotate-180"
+            className="h-[100px] w-full rotate-flip-Y"
           >
             <path
               d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
@@ -84,7 +84,7 @@ export default function BlogIndex() {
               className="fill-sky-200 dark:fill-slate-900"
             ></path>
           </svg>
-          <span className="top-[calc(_50%_+_20px_)] left-1/2 -translate-x-1/2 -translate-y-1/2 transform absolute w-full md:w-1/2">
+          <span className="top-[calc(_50%_+_-5px_)] left-0 absolute w-full text-center">
             Made with <span className="text-red">&#10084;</span> by Phat Truong
           </span>
         </div>

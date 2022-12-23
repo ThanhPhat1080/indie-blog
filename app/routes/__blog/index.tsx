@@ -15,7 +15,7 @@ export default function Index() {
   return (
     <>
       <div className="relative dark:bg-slate-800">
-        <section className="relative z-10 mx-auto flex w-full flex-col items-center gap-8 py-80 sm:px-4 md:px-0 dark:text-white sm:flex-row md:max-w-3xl lg:max-w-5xl 2xlg:max-w-7xl">
+        <section className="relative z-10 mx-auto flex w-full flex-col items-center gap-8 py-32 lg:py-80 sm:px-4 md:px-0 dark:text-white sm:flex-row md:max-w-3xl lg:max-w-5xl 2xlg:max-w-7xl">
           <div className="flex-1">
             <h1 className="my-5 text-4xl font-semibold lg:text-7xl">
               Hi, I am
@@ -47,7 +47,7 @@ export default function Index() {
           </div>
         </section>
         <div className="bg-wave relative">
-          <div className="absolute left-0 bottom-[600px] w-full before:absolute before:bottom-[-580px] before:h-[600px] before:w-full before:bg-sky-300 before:dark:bg-slate-500">
+          <div className="absolute left-0 bottom-[600px] w-full before:absolute before:bottom-[-580px] before:h-[590px] before:w-full before:bg-sky-300 before:dark:bg-slate-500">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
               <path
                 className="fill-sky-300 dark:fill-slate-500"

@@ -28,7 +28,7 @@ export const PostArticle = (
   return (
     <article className="flex flex-col gap-3 hover:-translate-y-5 transition duration-700 ease-in-out">
       <Link to={linkToPostContent} prefetch="intent">
-        <div className="h-96 overflow-hidden rounded-lg shadow-md">
+        <div className="h-56 md:h-72 lg:h-96 overflow-hidden rounded-lg shadow-md">
           <CloudinaryImageLoader
             alt={"Post cover image:" + title}
             src={coverImage || ""}
@@ -36,9 +36,15 @@ export const PostArticle = (
             responsive={[
               {
                 size: {
-                  width: 500,
+                  width: 800,
                 },
                 maxWidth: 1024,
+              },
+              {
+                size: {
+                  width: 400,
+                },
+                maxWidth: 768,
               },
             ]}
             className="h-full w-full object-cover"
@@ -59,7 +65,7 @@ export const PostArticle = (
       <div className="flex gap-3">
         <div className="relative h-12 w-12 border-spacing-3 overflow-hidden rounded-full border-2 border-sky-500 bg-white">
           <CloudinaryImageLoader
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform scale-110"
+            className="absolute-center"
             src={author.avatar || ""}
             height="50"
             width="50"
