@@ -8,6 +8,7 @@ import {
   ScrollRestoration,
   useMatches,
 } from "@remix-run/react";
+import { Partytown } from "@builder.io/partytown/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
@@ -53,15 +54,18 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
+        <Partytown debug={process.env.NODE_ENV === "development"} forward={["dataLayer.push"]} />
+        <script type="text/partytown">
+          <ScrollRestoration />
+          {/* include the scripts, or not! */}
+          {includeScripts ? <Scripts /> : null}
+        </script>
+
         <Meta />
         <Links />
       </head>
       <body className="h-full bg-white dark:bg-slate-800">
         <Outlet />
-        <ScrollRestoration />
-
-        {/* include the scripts, or not! */}
-        {includeScripts ? <Scripts /> : null}
       </body>
     </html>
   );

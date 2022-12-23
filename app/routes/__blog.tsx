@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, NavLink, Outlet } from "@remix-run/react";
 import ROUTERS from "~/constants/routers";
@@ -6,6 +5,8 @@ import { getPublishPosts } from "~/models/note.server";
 import type { LinksFunction } from "@remix-run/server-runtime";
 
 import lineWavy from "~/styles/line-wavy.css";
+
+export const handle = { hydrate: true };
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: lineWavy }];

@@ -5,6 +5,7 @@
   "scripts": {
     "build": "run-s build:*",
     "build:css": "tailwindcss -m -i ./app/styles/app.css -o ./app/styles/tailwind.css --minify",
+    "build:partytown": "npm run partytown",
     "build:remix": "remix build",
     "dev": "run-p dev:*",
     "dev:css": "tailwindcss -w -i ./app/styles/app.css -o ./app/styles/tailwind.css",
@@ -22,7 +23,8 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "prisma-migrate:dev": "prisma migrate dev",
     "prisma:reset": "rm ./prisma/data.db && prisma migrate dev && prisma migrate reset",
-    "prisma:preview": "prisma introspect && prisma studio"
+    "prisma:preview": "prisma introspect && prisma studio",
+    "partytown": "partytown copylib public/~partytown"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -31,6 +33,7 @@
     "/public/build"
   ],
   "dependencies": {
+    "@builder.io/partytown": "^0.7.3",
     "@next-boost/hybrid-disk-cache": "^0.3.0",
     "@prisma/client": "^4.5.0",
     "@remix-run/node": "*",
