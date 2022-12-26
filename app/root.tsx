@@ -77,15 +77,6 @@ export default function App() {
 
       </head>
       <body className="h-full bg-white dark:bg-slate-800">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-ML97CTM"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="GG-tag"
-          />
-        </noscript>
         <Outlet />
         <ScrollRestoration />
 

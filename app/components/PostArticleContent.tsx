@@ -22,7 +22,7 @@ export const PostArticleContent = (
   return (
     <article aria-details={title} aria-label={title} className="w-full">
       <div className="my-8">
-        <h1 className="text-4xl font-bold dark:text-gray-200 lg:text-6xl 2xl:text-8xl">
+        <h1 className="text-3xl font-bold dark:text-gray-200 lg:text-4xl 2xl:text-4xl">
           {title}
         </h1>
         <div className="my-8" />
