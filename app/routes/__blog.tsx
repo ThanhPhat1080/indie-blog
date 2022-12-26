@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, NavLink, Outlet } from "@remix-run/react";
 import ROUTERS from "~/constants/routers";
