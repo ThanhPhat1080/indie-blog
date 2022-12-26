@@ -1,3 +1,12 @@
+:root {
+    --link-hover-background: #a6e6fd;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --link-hover-background: #00384d;
+    }
+}
+
 .markdown-body {
     background-color: transparent;
 }
@@ -11,9 +20,11 @@
     border-radius: 10px;
     margin: 4rem auto;
 }
+
 .markdown-body ul li {
     list-style-type: disc;
 }
+
 .markdown-body ol li {
     list-style-type: decimal;
 }
@@ -22,4 +33,50 @@
     display: inline-block;
     margin-left: 2px;
     margin-right: 2px;
+}
+
+.markdown-body h1>a,
+.markdown-body h2>a,
+.markdown-body h3>a,
+.markdown-body h4>a,
+.markdown-body h5>a,
+.markdown-body h6>a {
+    color: inherit;
+    position: relative;
+    text-decoration: none;
+}
+
+.markdown-body h1>a::before,
+.markdown-body h2>a::before,
+.markdown-body h3>a::before,
+.markdown-body h4>a::before,
+.markdown-body h5>a::before,
+.markdown-body h6>a::before {
+    content: "";
+    color: rgb(36, 89, 124);
+    position: absolute;
+    top: 4px;
+    left: -30px;
+    opacity: 0.7;
+}
+
+.markdown-body h1>a:hover::before,
+.markdown-body h2>a:hover::before,
+.markdown-body h3>a:hover::before,
+.markdown-body h4>a:hover::before,
+.markdown-body h5>a:hover::before,
+.markdown-body h6>a:hover::before {
+    content: "#";
+}
+
+.markdown-body a {
+    background: linear-gradient(0deg, var(--link-hover-background), var(--link-hover-background)) no-repeat right bottom / 0 var(--bg-h);
+    transition: background-size 300ms;
+    --bg-h: 110%;
+    
+}
+
+.markdown-body a:where(:hover, :focus-visible) {
+    background-size: 100% var(--bg-h);
+    background-position-x: left;
 }

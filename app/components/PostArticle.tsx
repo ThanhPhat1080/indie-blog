@@ -54,7 +54,7 @@ export const PostArticle = (
 
       <div className="pb-4">
         <Link to={linkToPostContent} prefetch="intent" className="inline-block">
-          <h2 className="pb-2 max-h-fit overflow-hidden text-2xl font-bold tracking-tight decoration-wavy line-clamp-3 hover:underline dark:text-gray-300 text-slate-600 hover:text-sky-600 transition-all duration-700 ease-in-out w-fit">
+          <h2 className="pb-2 max-h-fit overflow-hidden text-2xl font-bold tracking-tight decoration-wavy line-clamp-3 hover:underline dark:text-sky-400 text-sky-700 w-fit">
             {title}
           </h2>
         </Link>

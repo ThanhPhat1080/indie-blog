@@ -56,7 +56,7 @@ export default function App() {
         <meta charSet="UTF-8" />
         <Meta />
         <Links />
-        <Partytown debug={true} forward={["dataLayer.push"]} />
+        <Partytown debug={process.env.NODE_ENV === "development"} forward={["dataLayer.push"]} />
 
         {/* Google tag (gtag.js) */}
         <script

@@ -3,6 +3,10 @@ import marked from "marked";
 import markDownBody from "../styles/mark-down-body.css";
 import lineWavy from "../styles/line-wavy.css";
 import atomOneDark from '../styles/atom-one-dark.min.css';
+import sanitizeHtml from 'sanitize-html';
+
+// @ts-ignore
+import customHeadingId from "marked-custom-heading-id";
 
 import type { LinksFunction } from "@remix-run/node";
 
@@ -46,7 +50,11 @@ marked.setOptions({
     return hljs.highlight(code, { language }).value;
   },
   langPrefix: "hljs language-",
+  headerPrefix: 'section-'
 });
+
+// @ts-ignore
+marked.use(customHeadingId());
 
 export default function TextWithMarkdown({
   text = "",
@@ -63,7 +71,9 @@ export default function TextWithMarkdown({
       style={style}
       dangerouslySetInnerHTML={{
         // @ts-ignore
-        __html: marked.parse(text),
+        __html: marked.parse(sanitizeHtml(text, {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img', 'div', 'pre', 'code', 'span', 'blockquote' ])
+        })),
       }}
     />
   );

@@ -18,9 +18,9 @@ export async function loader() {
 
 export default function BlogIndex() {
   return (
-    <div className="bg-white dark:bg-slate-800 relative">
+    <div className="relative bg-white dark:bg-slate-800">
       <header className="relative z-10 px-4 py-4 text-lg sm:px-3 md:px-0">
-        <div className="w-full mx-auto md:max-w-3xl lg:max-w-5xl 2xlg:max-w-7xl flex items-center justify-between ">
+        <div className="2xlg:max-w-7xl mx-auto flex w-full items-center justify-between md:max-w-3xl lg:max-w-5xl ">
           <Link to={ROUTERS.ROOT} title="Home">
             <img
               alt="Blog Logo"
@@ -59,14 +59,14 @@ export default function BlogIndex() {
         <Outlet />
       </main>
 
-      <footer className="bottom-0 mt-[180px] text-center text-lg dark:text-gray-300 relative">
+      <footer className="relative bottom-0 mt-[180px] text-center text-lg dark:text-gray-300">
         <div className="absolute bottom-0 left-0 w-full items-end justify-center">
           <svg
             data-name="Layer 1"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1200 120"
             preserveAspectRatio="none"
-            className="h-[100px] w-full rotate-flip-Y"
+            className="rotate-flip-Y h-[100px] w-full"
           >
             <path
               d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
@@ -83,8 +83,9 @@ export default function BlogIndex() {
               className="fill-sky-200 dark:fill-slate-900"
             ></path>
           </svg>
-          <span className="top-[calc(_50%_+_-5px_)] left-0 absolute w-full text-center">
-            Made with <span className="text-red">&#10084;</span> by Phat Truong
+          <span className="absolute top-[calc(_50%_+_-5px_)] left-0 w-full text-center">
+            Made with <span className="text-red">&#10084;</span> by{" "}
+            <em className="font-semibold">Phat Truong</em>🍨🍨🍨
           </span>
         </div>
       </footer>
